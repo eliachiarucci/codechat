@@ -36,7 +36,7 @@ router.post('/signup', (req, res, next) => {
       if (results !== null) {
         res.render('auth/signup', {
           email,
-          message: 'This email already exists!'
+          errorMessage: 'This email already exists!'
         });
         return;
       }
@@ -79,7 +79,7 @@ router.post('/signup', (req, res, next) => {
 
           newUser
             .save()
-            .then(() => res.redirect("/"))
+            .then(() => res.redirect("/")) //shoud add main routes 
             .catch((err) => next(err));
         })
         .catch((err) => next(err));
