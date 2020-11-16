@@ -11,7 +11,7 @@ const path = require("path");
 
 mongoose
   .connect(
-    "mongodb+srv://elia:codechat@cluster0.rqr6b.mongodb.net/codechat?retryWrites=true&w=majority",
+    "mongodb+srv://elia:codechat@cluster0.mdps2.mongodb.net/codechat?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then((x) => {
@@ -59,5 +59,8 @@ app.use("/", main);
 
 const auth = require("./routes/auth.routes");
 app.use("/", auth);
+
+const router = require('./routes/auth.routes');
+app.use('/', router);
 
 module.exports = app;
