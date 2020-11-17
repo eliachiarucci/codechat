@@ -1,22 +1,22 @@
-const { Router } = require('express');
+const { Router } = require("express");
 const router = new Router();
 
 // User model
-const User = require('../models/User.model.js');
+const User = require("../models/User.model.js");
 
 // Bcrypt to encrypt passwords
-const bcrypt = require('bcrypt');
-const { mainModule } = require('process');
+const bcrypt = require("bcrypt");
+const { mainModule } = require("process");
 const bcryptSalt = 10;
 
 /*******************************************************************************************************************
  *                                                   SIGN UP                                                       *
-*********************************************************************************************************************/
+ *********************************************************************************************************************/
 //GET route ==> to display the signup form to users.
-router.get('/signup', (req, res, next) => res.render('auth/signup'));
+router.get("/signup", (req, res, next) => res.render("auth/signup"));
 
 //POST route ==> to process form data
-router.post('/signup', (req, res, next) => {
+router.post("/signup", (req, res, next) => {
   const { firstname, lastname, email, password, confirmpassword } = req.body;
 
   // 1. Check username and password are not empty
@@ -26,19 +26,18 @@ router.post('/signup', (req, res, next) => {
       lastname,
       email,
       confirmpassword,
-      errorMessage:
-        "All fields are mandatory. Please fill the all blanks",
+      errorMessage: "All fields are mandatory. Please fill the all blanks",
     });
     return;
   }
 
   User.findOne({ email })
-    .then(results => {
+    .then((results) => {
       // 2. Check user does not already exist
       if (results !== null) {
-        res.render('auth/signup', {
+        res.render("auth/signup", {
           email,
-          errorMessage: 'This email already exists!'
+          errorMessage: "This email already exists!",
         });
         return;
       }
@@ -80,7 +79,7 @@ router.post('/signup', (req, res, next) => {
 
           newUser
             .save()
-            .then(() => res.redirect("/")) //shoud add main routes 
+            .then(() => res.redirect("/")) //shoud add main routes
             .catch((err) => next(err));
         })
         .catch((err) => next(err));
@@ -90,60 +89,62 @@ router.post('/signup', (req, res, next) => {
 
 /*******************************************************************************************************************
  *                                                  LOG IN                                                         *
-*********************************************************************************************************************/
+ *********************************************************************************************************************/
 
-const passport = require('passport');
+const passport = require("passport");
 
 //GET route ==> to display the login form to users.
-router.get('/login', (req, res, next) => res.render('auth/login'));
+router.get("/login", (req, res, next) => res.render("auth/login"));
 
-//POST route ==> to process form data 
-router.post('/login', (req, res, next) => {
-  passport.authenticate('local', (err, theUser, failureDetails) => {
+//POST route ==> to process form data
+router.post("/login", (req, res, next) => {
+  console.log("USER: ", "theUser");
+  passport.authenticate("local", (err, theUser, failureDetails) => {
+    console.log("USER: ", theUser);
     if (err) {
       // Something went wrong authenticating user
       return next(err);
     }
     if (!theUser) {
       // Unauthorized, `failureDetails` contains the error messages from our logic in "LocalStrategy" {message: '…'}.
-      res.render('auth/login', { errorMessage: 'Wrong password or username' });
+      res.render("auth/login", { errorMessage: "Wrong password or username" });
       return;
     }
     // save user in session: req.user
-    req.login(theUser, err => {
+    req.login(theUser, (err) => {
       if (err) {
         // Session save went bad
         return next(err);
       }
       // All good, we are now logged in and `req.user` is now set
-      res.redirect('/');
+      res.redirect("/feed");
     });
   })(req, res, next);
 });
-router.get('/login', (req, res, next) => {
-  res.render('auth/login', { errorMessage: req.flash('error') }); // !!!
+
+router.get("/login", (req, res, next) => {
+  res.render("auth/login", { errorMessage: req.flash("error") }); // !!!
 });
 
 //Private page -for only people who have account access this page
-router.get('/private-page', (req, res) => {
+router.get("/private-page", (req, res) => {
   if (!req.user) {
-    res.redirect('/login'); // can't access the page, so go and log in
+    res.redirect("/login"); // can't access the page, so go and log in
     return;
   }
 
   // ok, req.email is defined
-  res.render('private', { email: req.email });
+  res.render("private", { email: req.email });
 });
 
 router.post(
-  '/login',
-  passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true // !!!
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true, // !!!
   })
 );
-
 
 /*router.post("/login", (req, res, next) => {
   console.log("SESSION =====> ", req.session);
@@ -187,9 +188,19 @@ router.post(
     .catch((error) => next(error));
 });
 */
-router.get('/logout', (req, res) => {
+
+router.get("/feed", (req, res) => {
+  console.log(req.user);
+  if (!req.user) {
+    res.redirect("/");
+  } else {
+    res.render("home/feed", { user: req.user });
+  }
+});
+
+router.get("/logout", (req, res) => {
   req.logout();
-  res.redirect('/login');
+  res.redirect("/");
 });
 
 module.exports = router;
