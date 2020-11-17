@@ -1,24 +1,27 @@
 <div class="signupLogin-form">
     <form action="/login" method="post">
-		<h2>Login</h2>
+        <h2>Login</h2>
 
         <div class="form-group">
-        	<input type="email" class="form-control" name="email" placeholder="Email" required="required">
+            <input type="email" class="form-control" name="email" placeholder="Email" >
         </div>
-		<div class="form-group">
-            <input type="password" class="form-control" name="password" placeholder="Password" required="required">
-        </div>
-      
         <div class="form-group">
-			<label class="form-check-label"><input type="checkbox" required="required"> Remember me</label>
-		</div>
-		<div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Password" >
+        </div>
+
+        <div class="form-group">
+            <label class="form-check-label"><input type="checkbox" > Remember me</label>
+        </div>
+        <div class="form-group">
             <button type="submit" class="btn btn-success btn-lg btn-block">Sign In</button>
         </div>
+        <p class="loginwith"> or login with</p>
+       <div class="form-group-google">
+            <a href="/auth/google"><img src="" >Google SignIn</a>
+        </div>
+        {{#if errorMessage}}
+        <div class="error-message">{{errorMessage}}</div>
+        {{/if}}
     </form>
-	<div class="text-center">Don't have an account?<a href="#"> Sign up here</a></div>
+    <div class="text-center">Don't have an account?<a href="#"> Sign up here</a></div>
 </div>
-
-{{#if errorMessage}}
- <div class="error-message">{{errorMessage}}</div>
- {{/if}}
