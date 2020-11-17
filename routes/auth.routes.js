@@ -9,8 +9,8 @@ const bcrypt = require("bcrypt");
 const { mainModule } = require("process");
 const bcryptSalt = 10;
 
-/*******************************************************************************************************************
- *                                                   SIGN UP                                                       *
+/*********************************************************************************************************************
+ *                                                   SIGN UP                                                         *
  *********************************************************************************************************************/
 //GET route ==> to display the signup form to users.
 router.get("/signup", (req, res, next) => res.render("auth/signup"));
@@ -87,8 +87,8 @@ router.post("/signup", (req, res, next) => {
     .catch((err) => next(err));
 });
 
-/*******************************************************************************************************************
- *                                                  LOG IN                                                         *
+/*********************************************************************************************************************
+ *                                                  LOG IN                                                           *
  *********************************************************************************************************************/
 
 const passport = require("passport");
@@ -98,10 +98,19 @@ router.get("/login", (req, res, next) => res.render("auth/login"));
 
 //POST route ==> to process form data
 router.post("/login", (req, res, next) => {
+  const {email,password} = req.body;
   console.log("USER: ", "theUser");
+  if ( !email || !password ) {
+    res.render("auth/login", {
+      email,
+      errorMessage: "All fields are mandatory. Please fill the all blanks",
+    });
+    return;
+  }
+
   passport.authenticate("local", (err, theUser, failureDetails) => {
     console.log("USER: ", theUser);
-    if (err) {
+        if (err) {
       // Something went wrong authenticating user
       return next(err);
     }
@@ -117,6 +126,7 @@ router.post("/login", (req, res, next) => {
         return next(err);
       }
       // All good, we are now logged in and `req.user` is now set
+    
       res.redirect("/feed");
     });
   })(req, res, next);
@@ -132,7 +142,6 @@ router.get("/private-page", (req, res) => {
     res.redirect("/login"); // can't access the page, so go and log in
     return;
   }
-
   // ok, req.email is defined
   res.render("private", { email: req.email });
 });
@@ -145,49 +154,6 @@ router.post(
     failureFlash: true, // !!!
   })
 );
-
-/*router.post("/login", (req, res, next) => {
-  console.log("SESSION =====> ", req.session);
-  // get the data from login form
-  const { email, password } = req.body;
-
-  // Validate that incoming data is not empty.
-  if (!email || !password) {
-    res.render("auth/login", {
-      email,
-      errorMessage:
-        "All fields are mandatory. Please provide your email and password.",
-    });
-    return;
-  }
-
-  // find email and send correct response
-  User.findOne({ email })
-    .then((user) => {
-      // check if found email was an object or null
-      if (!user) {
-        res.render("auth/login", {
-          email,
-          errorMessage: "Email is not registered. Try with other email.",
-        });
-        return;
-      } else if (bcrypt.compareSync(password, user.passwordHash)) {
-        //res.render("users/user-profile", { user });
-
-        // Adding user to session so we can have an eye.
-        // redirect to the route for the profile
-        req.session.user = user;
-        res.redirect("/");
-      } else {
-        res.render("auth/login", {
-          email,
-          errorMessage: "Incorrect password",
-        });
-      }
-    })
-    .catch((error) => next(error));
-});
-*/
 
 router.get("/feed", (req, res) => {
   console.log(req.user);
@@ -202,5 +168,17 @@ router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+//Routes for Google Account 
+
+router.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }));
+
+router.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
 
 module.exports = router;

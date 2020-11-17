@@ -17,10 +17,16 @@ const User = require("./models/User.model");
 const LocalStrategy = require("passport-local").Strategy;
 const flash = require("connect-flash");
 
+//for Google account
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
+
 mongoose
   .connect(
     "mongodb+srv://elia:codechat@cluster0.mdps2.mongodb.net/codechat?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true }
+    { useNewUrlParser: true, 
+      useUnifiedTopology: true,
+      useCreateIndex: true
+     }
   )
   .then((x) => {
     console.log(
@@ -96,6 +102,21 @@ passport.use(
 
 app.use(flash());
 
+//for Google Account 
+
+passport.use(new GoogleStrategy({
+  clientID: '983568792623-99315tdls9o7uk3tr42klmf31v786065.apps.googleusercontent.com',
+  clientSecret: 'anWXv2HWemRERTGV4nLccgUH',
+  callbackURL: "http://localhost:3000/auth/google/callback"
+},
+function(accessToken, refreshToken, profile, cb) {
+  User.findOrCreate({ googleId: profile.id }, function (err, user) {
+    return cb(err, user);
+  });
+}
+));
+
+
 // Express View engine setup
 app.use(
   require("node-sass-middleware")({
@@ -121,5 +142,8 @@ app.use("/", auth);
 
 const router = require("./routes/auth.routes");
 app.use("/", router);
+
+//Log In with Google Account 
+
 
 module.exports = app;
