@@ -116,3 +116,21 @@ body {
 
 /*# sourceMappingURL=style.css.map */
 
+.editor-container {
+  border: 2px solid black;
+  width: 300px;
+  padding: 20px;
+  box-sizing: content-box;
+  background-color: #555;
+}
+
+.editor {
+  width: 300px;
+  height: 200px;
+}
+
+.target-container {
+  height: 200px;
+  width: 300px;
+  background-color: white;
+}

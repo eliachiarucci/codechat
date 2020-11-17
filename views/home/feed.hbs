@@ -2,5 +2,8 @@
   LOGGED IN {{user.email}} {{user.lastname}}
   <a href="/newpost">Create Post</a>
   <a href="/logout">LOGOUT</a>
+  {{#each posts}}
+  {{> post post=this user=../user }}
 
+  {{/each}}
 </h1>
