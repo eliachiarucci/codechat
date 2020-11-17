@@ -11,16 +11,21 @@ const path = require("path");
 
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+
 const bcrypt = require('bcrypt');
 const passport = require('passport');
-const User = require('./models/User.model');
 const LocalStrategy = require('passport-local').Strategy;
+
+const User = require('./models/User.model');
 const flash = require('connect-flash');
 
 mongoose
   .connect(
     "mongodb+srv://elia:codechat@cluster0.mdps2.mongodb.net/codechat?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true }
+    { useNewUrlParser: true, 
+      useUnifiedTopology: true,
+      useCreateIndex: true
+     }
   )
   .then((x) => {
     console.log(
@@ -73,7 +78,7 @@ passport.deserializeUser((id, cb) => {
 passport.use(
   new LocalStrategy(
     {
-      emailField: 'email', // by default
+      usernameField: 'email', // by default
       passwordField: 'password' // by default
     },
     (email, password, done) => {

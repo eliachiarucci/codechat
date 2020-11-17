@@ -97,7 +97,7 @@ const passport = require('passport');
 //GET route ==> to display the login form to users.
 router.get('/login', (req, res, next) => res.render('auth/login'));
 
-//POST route ==> to process form data 
+//POST route
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', (err, theUser, failureDetails) => {
     if (err) {
@@ -106,7 +106,7 @@ router.post('/login', (req, res, next) => {
     }
     if (!theUser) {
       // Unauthorized, `failureDetails` contains the error messages from our logic in "LocalStrategy" {message: '…'}.
-      res.render('auth/login', { errorMessage: 'Wrong password or username' });
+      res.render('auth/login', {email, errorMessage: 'Wrong password or e-mail' });
       return;
     }
     // save user in session: req.user
