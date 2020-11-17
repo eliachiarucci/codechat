@@ -1,7 +1,24 @@
 body {
-  color: #fff;
-  background: #63738a;
-  font-family: 'Roboto', sans-serif; }
+  padding: 0px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+
+body {
+  font-family: 'Roboto', sans-serif;
+  height: 100vh; }
+
+.blue-background {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #007bff; }
+
+.homescreen-container {
+  color: white !important; }
+
+.custom-col {
+  z-index: 1; }
 
 .form-control {
   height: 40px;
