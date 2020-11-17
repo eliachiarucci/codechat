@@ -198,6 +198,14 @@ router.get("/feed", (req, res) => {
   }
 });
 
+router.get("/newpost", (req, res) => {
+  if (!req.user) {
+    res.redirect("/");
+  } else {
+    res.render("home/newpost", { user: req.user });
+  }
+});
+
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");

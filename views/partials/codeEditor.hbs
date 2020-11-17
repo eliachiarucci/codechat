@@ -1,0 +1,50 @@
+<h1>PARTIAL</h1>
+<button onclick="switchTab('html')">HTML</button>
+<button onclick="switchTab('css')">CSS</button>
+<button onclick="switchTab('js')">JS</button>
+<div id="html" class="editor" style="display: block; height: 200px; width: 300px;">
+  <h1></h1>
+</div>
+<div id="css" class="editor" style="display: none; height: 200px; width: 300px;">.style {height: 300px}</div>
+<div id="js" class="editor" style="display: none; height: 200px; width: 300px;">function ciao() {console.log("ciao")}
+</div>
+<button onclick="runCode()">RUN CODE</button>
+<div id="console"></div>
+<div id="target" style="height: 300px; width: 300px;"></div>
+<script>
+  var htmlEditor = ace.edit("html");
+  var cssEditor = ace.edit("css");
+  var jsEditor = ace.edit("js");
+
+  function switchTab(tab) {
+    let editors = document.getElementsByClassName("editor");
+    for (let i = 0; i < editors.length; i++) {
+      editors[i].style.display = "none";
+    }
+    document.getElementById(tab).style.display = "block"
+  }
+
+  function runCode() {
+    let element = document.getElementById("target");
+    element.innerHTML = "";
+
+    let newDiv = document.createElement("div");
+    let shadow = newDiv.attachShadow({
+      mode: 'closed'
+    });
+
+    shadow.innerHTML = htmlEditor.getValue();
+
+    let css = document.createElement("style");
+    css.innerHTML = cssEditor.getValue();
+    shadow.prepend(css);
+
+    let js = document.createElement("script");
+    js.innerHTML = jsEditor.getValue();
+    shadow.append(js);
+
+    element.append(newDiv);
+
+  }
+
+</script>

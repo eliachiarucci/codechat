@@ -1,5 +1,5 @@
-const { Schema, model } = require('mongoose');
- 
+const { Schema, model } = require("mongoose");
+
 const userSchema = new Schema(
   {
     firstname: String,
@@ -9,8 +9,8 @@ const userSchema = new Schema(
     confirmpassword: String,
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
- 
-module.exports = model('User', userSchema);
+
+module.exports = model("User", userSchema);
