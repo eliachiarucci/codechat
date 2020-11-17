@@ -107,7 +107,7 @@ app.use(flash());
 passport.use(new GoogleStrategy({
   clientID: '983568792623-99315tdls9o7uk3tr42klmf31v786065.apps.googleusercontent.com',
   clientSecret: 'anWXv2HWemRERTGV4nLccgUH',
-  callbackURL: "http://www.example.com/auth/google/callback"
+  callbackURL: "http://localhost:3000/auth/google/callback"
 },
 function(accessToken, refreshToken, profile, cb) {
   User.findOrCreate({ googleId: profile.id }, function (err, user) {
