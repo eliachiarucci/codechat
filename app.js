@@ -15,6 +15,7 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const User = require('./models/User.model');
 const LocalStrategy = require('passport-local').Strategy;
+const flash = require('connect-flash');
 
 mongoose
   .connect(
@@ -92,6 +93,9 @@ passport.use(
     }
   )
 );
+
+app.use(flash());
+
 
 // Express View engine setup
 app.use(
