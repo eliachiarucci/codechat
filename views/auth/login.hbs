@@ -1,3 +1,4 @@
+<body class="signupLoginbody">
 <div class="signupLogin-form">
     <form action="/login" method="post">
         <h2>Login</h2>
@@ -16,12 +17,13 @@
             <button type="submit" class="btn btn-success btn-lg btn-block">Sign In</button>
         </div>
         <p class="loginwith"> or login with</p>
-       <div class="form-group-google">
-            <a href="/auth/google"><img src="/" >Google SignIn</a>
-        </div>
+     <div class="form-group-google">
+            <a href="/auth/google" style="color:red"><img src="/public/images/google.jpg" >Google SignIn</a>
+        </div> 
         {{#if errorMessage}}
         <div class="error-message">{{errorMessage}}</div>
         {{/if}}
     </form>
-    <div class="text-center">Don't have an account?<a href="#"> Sign up here</a></div>
+    <div class="text-center">Don't have an account?<a href="/signup"> Sign up here</a></div>
 </div>
+</body>

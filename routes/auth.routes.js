@@ -82,7 +82,7 @@ router.post("/signup", (req, res, next) => {
 
           newUser
             .save()
-            .then(() => res.redirect("/")) //shoud add main routes
+            .then(() => res.redirect("/feed")) //shoud add main routes
             .catch((err) => next(err));
         })
         .catch((err) => next(err));
@@ -254,8 +254,7 @@ router.get(
   passport.authenticate("google", { failureRedirect: "/login" }),
   function (req, res) {
     // Successful authentication, redirect home.
-    res.redirect("/");
-  }
-);
+    res.redirect('/feed');
+  });
 
 module.exports = router;
