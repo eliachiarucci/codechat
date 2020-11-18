@@ -20,7 +20,9 @@ body {
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-color: #007bff;
+	background: url("../images/blackcolorful2.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .homescreen-container {
@@ -114,10 +116,19 @@ body {
 .ssignupLogin-form form a:hover {
   text-decoration: underline; }
 
-  .text-center a{
-    color:black;
+.text-center{
+   color: rgb(209, 183, 32)
+  }
+.text-center a{
+    color:rgb(209, 183, 32);
     font-weight: bold;
   }
+
+.signupLoginbody{
+  background: url("../images/blackcolorful2.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 /*# sourceMappingURL=style.css.map */
 
 .target-container {

@@ -1,4 +1,3 @@
-/* OPENNING PAGE */
 body {
   padding: 0px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
@@ -13,12 +12,12 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  background-image: url("../images/blackcolorful2.jpg");
+  background: url("../images/blackcolorful2.jpg");
   background-repeat: no-repeat;
-  background-size: cover;}
+  background-size: cover; }
 
 .homescreen-container {
-  color: rgb(248, 244, 6) !important; }
+  color: white !important; }
 
 .custom-col {
   z-index: 1; }
@@ -29,18 +28,10 @@ body {
   color: #969fa4; }
 
 .form-control:focus {
-  border-color: #b85cb4; }
+  border-color: #5cb85c; }
 
 .form-control, .btn {
   border-radius: 3px; }
-
-  /* SIGN UP & LOGIN PAGE */
-
-.signupLoginbody{
-  background-image: url("../images/blackcolorful2.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-}
 
 .signupLogin-form {
   width: 450px;
@@ -92,8 +83,7 @@ body {
   font-size: 16px;
   font-weight: bold;
   min-width: 140px;
-  outline: none !important;
- }
+  outline: none !important; }
 
 .signupLogin-form .row div:first-child {
   padding-right: 10px; }
@@ -109,12 +99,23 @@ body {
   text-decoration: none; }
 
 .signupLogin-form form a {
-  color: #0b520b4d;
+  color: #5cb85c;
   text-decoration: none; }
 
 .ssignupLogin-form form a:hover {
   text-decoration: underline; }
 
+.text-center {
+  color: #d1b720; }
+
+.text-center a {
+  color: #d1b720;
+  font-weight: bold; }
+
+.signupLoginbody {
+  background: url("../images/blackcolorful2.jpg");
+  background-repeat: no-repeat;
+  background-size: cover; }
 
 /*# sourceMappingURL=style.css.map */
 .target-container {
@@ -150,9 +151,5 @@ body {
   padding: 20px;
   box-sizing: content-box;
   background-color: #555; }
-
-.text-center a {
-  color: rgb(252, 235, 6);
-  font-weight: bold; }
 
 /*# sourceMappingURL=style.css.map */
