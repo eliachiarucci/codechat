@@ -11,11 +11,10 @@
       const htmlEditor = ace.edit("html{{post.id}}");
       const cssEditor = ace.edit("css{{post.id}}");
       const jsEditor = ace.edit("js{{post.id}}");
-      console.log(htmlEditor.getValue());
-      /* addFormValue(form, "html", htmlEditor.getValue());
+      addFormValue(form, "html", htmlEditor.getValue());
       addFormValue(form, "css", cssEditor.getValue());
       addFormValue(form, "js", jsEditor.getValue());
-      form.submit(); */
+      form.submit();
     }
 
     function addFormValue(form, name, value) {

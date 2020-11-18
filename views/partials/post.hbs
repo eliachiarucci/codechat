@@ -1,13 +1,19 @@
-<div class="container">
+<div class="post-container">
+  <div class="post-name-container">
+    <p>{{post.author.firstname}} {{post.author.lastname}}</p>
+    <p>{{formatDate post.createdAt}}</p>
+    {{#ifEquals user.id post.author._id}}
+    <div>
+      <a href="/modifypost/{{post.id}}">Modify</a>
+      <form action="/deletepost/{{post.id}}" method="POST"
+        onSubmit="return confirm('Are you sure you wish to delete?');">
+        <input type="submit" value="Delete">
+      </form>
+    </div>
+    {{/ifEquals}}
+  </div>
   <p>{{post.text}}</p>
-  {{#ifEquals user.id post.author}}
-  <a href="/modifypost/{{post.id}}">Modify</a>
-  <form action="/deletepost/{{post.id}}" method="POST" onSubmit="return confirm('Are you sure you wish to delete?');">
-    <input type="submit" value="Delete">
-  </form>
-  {{else}}
 
-  {{/ifEquals}}
   {{> codeEditor post}}
   <a href="">Comment</a>
 </div>

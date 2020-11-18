@@ -104,20 +104,38 @@ body {
   text-decoration: underline; }
 
 /*# sourceMappingURL=style.css.map */
-.editor-container {
-  border: 2px solid black;
+.target-container {
+  height: 200px;
   width: 300px;
-  padding: 20px;
+  background-color: white; }
+
+.feed-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; }
+
+.post-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 100px;
+  background-color: #007bff66;
+  padding: 50px;
   box-sizing: content-box;
-  background-color: #555; }
+  border-radius: 20px; }
+
+.post-name-container {
+  display: flex;
+  justify-content: space-between; }
 
 .editor {
   width: 300px;
   height: 200px; }
 
-.target-container {
-  height: 200px;
+.editor-container {
+  border-radius: 20px;
   width: 300px;
-  background-color: white; }
+  padding: 20px;
+  box-sizing: content-box;
+  background-color: #555; }
 
 /*# sourceMappingURL=style.css.map */

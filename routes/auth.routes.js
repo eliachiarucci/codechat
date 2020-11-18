@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const router = new Router();
-
+const { format } = require("date-fns");
 // User model
 const User = require("../models/User.model.js");
 
@@ -95,6 +95,7 @@ router.post("/signup", (req, res, next) => {
  *********************************************************************************************************************/
 
 const passport = require("passport");
+const { populate } = require("../models/User.model.js");
 
 //GET route ==> to display the login form to users.
 router.get("/login", (req, res, next) => res.render("auth/login"));
@@ -164,7 +165,13 @@ router.get("/feed", (req, res) => {
     res.redirect("/");
   } else {
     Post.find()
-      .then((posts) => res.render("home/feed", { user: req.user, posts }))
+      .populate("author")
+      .then((posts) => {
+        res.render("home/feed", {
+          user: req.user,
+          posts,
+        });
+      })
       .catch((err) => res.send("There has been an error"));
   }
 });
