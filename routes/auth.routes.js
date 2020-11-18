@@ -1,8 +1,11 @@
 const { Router } = require("express");
 const router = new Router();
-
+const { format } = require("date-fns");
 // User model
 const User = require("../models/User.model.js");
+
+// Post model
+const Post = require("../models/Post.model");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -92,15 +95,16 @@ router.post("/signup", (req, res, next) => {
  *********************************************************************************************************************/
 
 const passport = require("passport");
+const { populate } = require("../models/User.model.js");
 
 //GET route ==> to display the login form to users.
 router.get("/login", (req, res, next) => res.render("auth/login"));
 
 //POST route ==> to process form data
 router.post("/login", (req, res, next) => {
-  const {email,password} = req.body;
+  const { email, password } = req.body;
   console.log("USER: ", "theUser");
-  if ( !email || !password ) {
+  if (!email || !password) {
     res.render("auth/login", {
       email,
       errorMessage: "All fields are mandatory. Please fill the all blanks",
@@ -110,7 +114,7 @@ router.post("/login", (req, res, next) => {
 
   passport.authenticate("local", (err, theUser, failureDetails) => {
     console.log("USER: ", theUser);
-        if (err) {
+    if (err) {
       // Something went wrong authenticating user
       return next(err);
     }
@@ -126,7 +130,7 @@ router.post("/login", (req, res, next) => {
         return next(err);
       }
       // All good, we are now logged in and `req.user` is now set
-    
+
       res.redirect("/feed");
     });
   })(req, res, next);
@@ -160,7 +164,15 @@ router.get("/feed", (req, res) => {
   if (!req.user) {
     res.redirect("/");
   } else {
-    res.render("home/feed", { user: req.user });
+    Post.find()
+      .populate("author")
+      .then((posts) => {
+        res.render("home/feed", {
+          user: req.user,
+          posts,
+        });
+      })
+      .catch((err) => res.send("There has been an error"));
   }
 });
 
@@ -172,21 +184,78 @@ router.get("/newpost", (req, res) => {
   }
 });
 
+router.post("/newpost", (req, res) => {
+  let { id } = req.user;
+  const { text, html, css, js } = req.body;
+  console.log(id);
+
+  Post.create({ text, html, css, js, author: id })
+    .then(
+      (newpost) => console.log(newpost),
+      res.send("new post created succesfully!")
+    )
+    .carch((err) => console.error(err));
+});
+
+router.get("/modifypost/:postID", (req, res) => {
+  let { id } = req.user;
+  let { postID } = req.params;
+  Post.findById(postID)
+    .then((post) => {
+      if (id == post.author) {
+        res.render("home/modify", { user: req.user, post });
+      } else {
+        res.redirect("/feed");
+      }
+    })
+    .catch((err) => console.error(err));
+});
+
+router.post("/modifypost/:postID", (req, res) => {
+  let { postID } = req.params;
+  let modifyObject = req.body;
+  Post.findByIdAndUpdate(postID, modifyObject)
+    .then((post) => {
+      res.redirect("/feed");
+    })
+    .catch((err) => console.error(err));
+});
+
+router.post("/deletepost/:postID", (req, res) => {
+  const { id } = req.user;
+  let { postID } = req.params;
+  Post.findById(postID)
+    .then((post) => {
+      if (id == post.author) {
+        Post.findByIdAndDelete(postID)
+          .then(() => res.redirect("/feed"))
+          .catch((err) => console.log(err));
+      } else {
+        res.redirect("/feed");
+      }
+    })
+    .catch((err) => console.error(err));
+});
+
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
 
-//Routes for Google Account 
+//Routes for Google Account
 
-router.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile'] }));
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile"] })
+);
 
-router.get('/auth/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  function(req, res) {
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  function (req, res) {
     // Successful authentication, redirect home.
-    res.redirect('/');
-  });
+    res.redirect("/");
+  }
+);
 
 module.exports = router;

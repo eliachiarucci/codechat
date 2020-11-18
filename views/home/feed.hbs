@@ -1,6 +1,6 @@
-<h1>
-  LOGGED IN {{user.email}} {{user.lastname}}
-  <a href="/newpost">Create Post</a>
-  <a href="/logout">LOGOUT</a>
-
-</h1>
+<div class="feed-container">
+  <!-- LOGGED IN {{user.email}} {{user.lastname}} -->
+  {{#each posts}}
+  {{> post post=this user=../user }}
+  {{/each}}
+</div>

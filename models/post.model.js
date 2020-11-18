@@ -1,13 +1,13 @@
-const { schema, model } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const postSchema = new Schema(
   {
-    text: { Type: String },
-    image: { Type: String },
-    html: { Type: String },
-    css: { Type: String },
-    js: { Type: String },
-    owner: { Type: schema.Types.ObjectId, ref: "User" },
+    text: { type: String },
+    image: { type: String },
+    html: { type: String },
+    css: { type: String },
+    js: { type: String },
+    author: { type: Schema.Types.ObjectId, ref: "User" },
   },
   {
     timestamps: true,
