@@ -8,7 +8,6 @@ const hbs = require("hbs");
 const mongoose = require("mongoose");
 const logger = require("morgan");
 const path = require("path");
-
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const bcrypt = require("bcrypt");
@@ -16,17 +15,14 @@ const passport = require("passport");
 const User = require("./models/User.model");
 const LocalStrategy = require("passport-local").Strategy;
 const flash = require("connect-flash");
-
+const { format } = require("date-fns");
 //for Google account
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 mongoose
   .connect(
     "mongodb+srv://elia:codechat@cluster0.mdps2.mongodb.net/codechat?retryWrites=true&w=majority",
-    { useNewUrlParser: true, 
-      useUnifiedTopology: true,
-      useCreateIndex: true
-     }
+    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
   )
   .then((x) => {
     console.log(
@@ -102,20 +98,23 @@ passport.use(
 
 app.use(flash());
 
-//for Google Account 
+//for Google Account
 
-passport.use(new GoogleStrategy({
-  clientID: '983568792623-99315tdls9o7uk3tr42klmf31v786065.apps.googleusercontent.com',
-  clientSecret: 'anWXv2HWemRERTGV4nLccgUH',
-  callbackURL: "http://localhost:3000/auth/google/callback"
-},
-function(accessToken, refreshToken, profile, cb) {
-  User.findOrCreate({ googleId: profile.id }, function (err, user) {
-    return cb(err, user);
-  });
-}
-));
-
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID:
+        "983568792623-99315tdls9o7uk3tr42klmf31v786065.apps.googleusercontent.com",
+      clientSecret: "anWXv2HWemRERTGV4nLccgUH",
+      callbackURL: "http://localhost:3000/auth/google/callback",
+    },
+    function (accessToken, refreshToken, profile, cb) {
+      User.findOrCreate({ googleId: profile.id }, function (err, user) {
+        return cb(err, user);
+      });
+    }
+  )
+);
 
 // Express View engine setup
 app.use(
@@ -130,9 +129,21 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
 app.use(express.static(path.join(__dirname, "public")));
 app.use(favicon(path.join(__dirname, "public", "images", "favicon.ico")));
+app.use(function (req, res, next) {
+  app.locals.user = req.user;
+  next();
+});
 
 hbs.registerPartials("views/partials");
-
+hbs.registerHelper("ifEquals", function (arg1, arg2, options) {
+  return arg1 == arg2 ? options.fn(this) : options.inverse(this);
+});
+hbs.registerHelper("formatDate", function (date) {
+  return format(date, "dd-MM-yyyy");
+});
+hbs.registerHelper("object", function ({ hash }) {
+  return hash;
+});
 // default value for title local
 app.locals.title = "Express - Generated with IronGenerator";
 
@@ -145,7 +156,6 @@ app.use("/", auth);
 const router = require("./routes/auth.routes");
 app.use("/", router);
 
-//Log In with Google Account 
-
+//Log In with Google Account
 
 module.exports = app;

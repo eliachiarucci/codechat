@@ -1,0 +1,26 @@
+LOGGED IN AS {{user.email}} {{user.lastname}}
+<form name="modifypost" action="/modifypost/{{post.id}}" method="POST">
+  <textarea type="text" name="text">{{post.text}}</textarea>
+</form>
+{{> codeEditor post}}
+<button onclick="submitForm()">Submit </button>
+<script>
+  function submitForm() {
+    let form = document.forms["modifypost"];
+    const htmlEditor = ace.edit("html{{post.id}}");
+    const cssEditor = ace.edit("css{{post.id}}");
+    const jsEditor = ace.edit("js{{post.id}}");
+    addFormValue(form, "html", htmlEditor.getValue());
+    addFormValue(form, "css", cssEditor.getValue());
+    addFormValue(form, "js", jsEditor.getValue());
+    form.submit();
+  }
+
+  function addFormValue(form, name, value) {
+    let newInput = document.createElement("input");
+    newInput.type = "hidden";
+    newInput.name = name;
+    newInput.value = value;
+    form.append(newInput);
+  }
+</script>
