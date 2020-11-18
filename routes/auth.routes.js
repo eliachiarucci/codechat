@@ -246,15 +246,30 @@ router.get("/logout", (req, res) => {
 
 router.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile"] })
+  passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
 router.get(
   "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  function (req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/feed');
-  });
+ // passport.authenticate("google", { failureRedirect: "/login" }),
+  function (req, res, next) {
+    passport.authenticate("google", (err, theUser, failureDetails) => {
+       if (err) {
+        // Something went wrong authenticating user
+        return next(err);
+      }
+      console.log("user ",theUser);
+      // save user in session: req.user
+     
+      req.login(theUser, (err) => {
+        if (err) {
+          // Session save went bad
+          return next(err);
+        }
+       // req.user = theUser;
+        res.redirect("/feed");
+      });
+    })(req, res, next);
+  })
 
 module.exports = router;
