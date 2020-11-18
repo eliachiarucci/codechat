@@ -62,7 +62,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Passport serialize
-passport.serializeUser((user, cb) => cb(null, user._id));
+passport.serializeUser((user, cb) => cb(null, user));
 
 // Passport deserialize
 passport.deserializeUser((id, cb) => {
@@ -109,9 +109,23 @@ passport.use(
       callbackURL: "http://localhost:3000/auth/google/callback",
     },
     function (accessToken, refreshToken, profile, cb) {
-      User.findOrCreate({ googleId: profile.id }, function (err, user) {
-        return cb(err, user);
-      });
+      console.log('profile', profile)
+      User.find({ email: profile._json.email })
+        .then(currentUser => {
+          if(currentUser){
+            cb(null, currentUser);
+          }
+          else{
+            const { givenName, familyName } = profile.name;
+           return User.create({firstName: givenName, lastName: familyName, googleId: profile.id})
+                    .then(newUser => {
+                      console.log('new user', newUser)
+                      cb(null, newUser);
+                    })
+                    .catch(err => console.log(err))
+           }
+        })
+        .catch(err => console.log(err))
     }
   )
 );
