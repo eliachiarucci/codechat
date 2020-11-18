@@ -1,0 +1,28 @@
+<h1>
+  LOGGED IN AS {{user.email}} {{user.lastname}}
+  <form name="newpost" action="/newpost" method="POST">
+    <input type="text" name="text">
+  </form>
+  {{> codeEditor}}
+  <button onclick="submitForm()">Submit </button>
+  <script>
+    function submitForm() {
+      let form = document.forms["newpost"];
+      const htmlEditor = ace.edit("html{{post.id}}");
+      const cssEditor = ace.edit("css{{post.id}}");
+      const jsEditor = ace.edit("js{{post.id}}");
+      addFormValue(form, "html", htmlEditor.getValue());
+      addFormValue(form, "css", cssEditor.getValue());
+      addFormValue(form, "js", jsEditor.getValue());
+      form.submit();
+    }
+
+    function addFormValue(form, name, value) {
+      let newInput = document.createElement("input");
+      newInput.type = "hidden";
+      newInput.name = name;
+      newInput.value = value;
+      form.append(newInput);
+    }
+  </script>
+</h1>

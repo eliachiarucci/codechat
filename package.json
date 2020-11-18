@@ -10,9 +10,11 @@
   "dependencies": {
     "bcrypt": "^5.0.0",
     "body-parser": "^1.18.3",
+    "codemirror": "^5.58.2",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^3.2.0",
     "cookie-parser": "^1.4.3",
+    "date-fns": "^2.16.1",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "express-session": "^1.17.1",
@@ -21,6 +23,7 @@
     "morgan": "^1.9.0",
     "node-sass-middleware": "^0.11.0",
     "passport": "^0.4.1",
+    "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "serve-favicon": "^2.5.0"
   },

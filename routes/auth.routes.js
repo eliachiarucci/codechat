@@ -1,22 +1,25 @@
-const { Router } = require('express');
+const { Router } = require("express");
 const router = new Router();
-
+const { format } = require("date-fns");
 // User model
-const User = require('../models/User.model.js');
+const User = require("../models/User.model.js");
+
+// Post model
+const Post = require("../models/Post.model");
 
 // Bcrypt to encrypt passwords
-const bcrypt = require('bcrypt');
-const { mainModule } = require('process');
+const bcrypt = require("bcrypt");
+const { mainModule } = require("process");
 const bcryptSalt = 10;
 
-/*******************************************************************************************************************
- *                                                   SIGN UP                                                       *
-*********************************************************************************************************************/
+/*********************************************************************************************************************
+ *                                                   SIGN UP                                                         *
+ *********************************************************************************************************************/
 //GET route ==> to display the signup form to users.
-router.get('/signup', (req, res, next) => res.render('auth/signup'));
+router.get("/signup", (req, res, next) => res.render("auth/signup"));
 
 //POST route ==> to process form data
-router.post('/signup', (req, res, next) => {
+router.post("/signup", (req, res, next) => {
   const { firstname, lastname, email, password, confirmpassword } = req.body;
 
   // 1. Check username and password are not empty
@@ -26,19 +29,18 @@ router.post('/signup', (req, res, next) => {
       lastname,
       email,
       confirmpassword,
-      errorMessage:
-        "All fields are mandatory. Please fill the all blanks",
+      errorMessage: "All fields are mandatory. Please fill the all blanks",
     });
     return;
   }
 
   User.findOne({ email })
-    .then(results => {
+    .then((results) => {
       // 2. Check user does not already exist
       if (results !== null) {
-        res.render('auth/signup', {
+        res.render("auth/signup", {
           email,
-          errorMessage: 'This email already exists!'
+          errorMessage: "This email already exists!",
         });
         return;
       }
@@ -80,7 +82,7 @@ router.post('/signup', (req, res, next) => {
 
           newUser
             .save()
-            .then(() => res.redirect("/")) //shoud add main routes 
+            .then(() => res.redirect("/feed")) //shoud add main routes
             .catch((err) => next(err));
         })
         .catch((err) => next(err));
@@ -88,108 +90,179 @@ router.post('/signup', (req, res, next) => {
     .catch((err) => next(err));
 });
 
-/*******************************************************************************************************************
- *                                                  LOG IN                                                         *
-*********************************************************************************************************************/
+/*********************************************************************************************************************
+ *                                                  LOG IN                                                           *
+ *********************************************************************************************************************/
 
-const passport = require('passport');
+const passport = require("passport");
+const { populate } = require("../models/User.model.js");
 
 //GET route ==> to display the login form to users.
-router.get('/login', (req, res, next) => res.render('auth/login'));
+router.get("/login", (req, res, next) => res.render("auth/login"));
 
-//POST route ==> to process form data 
-router.post('/login', (req, res, next) => {
-  passport.authenticate('local', (err, theUser, failureDetails) => {
+//POST route ==> to process form data
+router.post("/login", (req, res, next) => {
+  const { email, password } = req.body;
+  console.log("USER: ", "theUser");
+  if (!email || !password) {
+    res.render("auth/login", {
+      email,
+      errorMessage: "All fields are mandatory. Please fill the all blanks",
+    });
+    return;
+  }
+
+  passport.authenticate("local", (err, theUser, failureDetails) => {
+    console.log("USER: ", theUser);
     if (err) {
       // Something went wrong authenticating user
       return next(err);
     }
     if (!theUser) {
       // Unauthorized, `failureDetails` contains the error messages from our logic in "LocalStrategy" {message: '…'}.
-      res.render('auth/login', { errorMessage: 'Wrong password or username' });
+      res.render("auth/login", { errorMessage: "Wrong password or username" });
       return;
     }
     // save user in session: req.user
-    req.login(theUser, err => {
+    req.login(theUser, (err) => {
       if (err) {
         // Session save went bad
         return next(err);
       }
       // All good, we are now logged in and `req.user` is now set
-      res.redirect('/');
+
+      res.redirect("/feed");
     });
   })(req, res, next);
 });
-router.get('/login', (req, res, next) => {
-  res.render('auth/login', { errorMessage: req.flash('error') }); // !!!
+
+router.get("/login", (req, res, next) => {
+  res.render("auth/login", { errorMessage: req.flash("error") }); // !!!
 });
 
 //Private page -for only people who have account access this page
-router.get('/private-page', (req, res) => {
+router.get("/private-page", (req, res) => {
   if (!req.user) {
-    res.redirect('/login'); // can't access the page, so go and log in
+    res.redirect("/login"); // can't access the page, so go and log in
     return;
   }
-
   // ok, req.email is defined
-  res.render('private', { email: req.email });
+  res.render("private", { email: req.email });
 });
 
 router.post(
-  '/login',
-  passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true // !!!
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true, // !!!
   })
 );
 
-
-/*router.post("/login", (req, res, next) => {
-  console.log("SESSION =====> ", req.session);
-  // get the data from login form
-  const { email, password } = req.body;
-
-  // Validate that incoming data is not empty.
-  if (!email || !password) {
-    res.render("auth/login", {
-      email,
-      errorMessage:
-        "All fields are mandatory. Please provide your email and password.",
-    });
-    return;
+router.get("/feed", (req, res) => {
+  console.log(req.user);
+  if (!req.user) {
+    res.redirect("/");
+  } else {
+    Post.find()
+      .populate("author")
+      .then((posts) => {
+        res.render("home/feed", {
+          user: req.user,
+          posts,
+        });
+      })
+      .catch((err) => res.send("There has been an error"));
   }
+});
 
-  // find email and send correct response
-  User.findOne({ email })
-    .then((user) => {
-      // check if found email was an object or null
-      if (!user) {
-        res.render("auth/login", {
-          email,
-          errorMessage: "Email is not registered. Try with other email.",
-        });
-        return;
-      } else if (bcrypt.compareSync(password, user.passwordHash)) {
-        //res.render("users/user-profile", { user });
+router.get("/newpost", (req, res) => {
+  if (!req.user) {
+    res.redirect("/");
+  } else {
+    res.render("home/newpost", { user: req.user });
+  }
+});
 
-        // Adding user to session so we can have an eye.
-        // redirect to the route for the profile
-        req.session.user = user;
-        res.redirect("/");
+router.post("/newpost", (req, res) => {
+  let { id } = req.user;
+  const { text, html, css, js } = req.body;
+  console.log(id);
+
+  Post.create({ text, html, css, js, author: id })
+    .then(
+      (newpost) => console.log(newpost),
+      res.send("new post created succesfully!")
+    )
+    .carch((err) => console.error(err));
+});
+
+router.get("/modifypost/:postID", (req, res) => {
+  let { id } = req.user;
+  let { postID } = req.params;
+  Post.findById(postID)
+    .then((post) => {
+      if (id == post.author) {
+        res.render("home/modify", { user: req.user, post });
       } else {
-        res.render("auth/login", {
-          email,
-          errorMessage: "Incorrect password",
-        });
+        res.redirect("/feed");
       }
     })
-    .catch((error) => next(error));
+    .catch((err) => console.error(err));
 });
-*/
-router.get('/logout', (req, res) => {
+
+router.post("/modifypost/:postID", (req, res) => {
+  let { postID } = req.params;
+  let modifyObject = req.body;
+  Post.findByIdAndUpdate(postID, modifyObject)
+    .then((post) => {
+      res.redirect("/feed");
+    })
+    .catch((err) => console.error(err));
+});
+
+router.post("/deletepost/:postID", (req, res) => {
+  const { id } = req.user;
+  let { postID } = req.params;
+  Post.findById(postID)
+    .then((post) => {
+      if (id == post.author) {
+        Post.findByIdAndDelete(postID)
+          .then(() => res.redirect("/feed"))
+          .catch((err) => console.log(err));
+      } else {
+        res.redirect("/feed");
+      }
+    })
+    .catch((err) => console.error(err));
+});
+
+router.get("/logout", (req, res) => {
   req.logout();
-  res.redirect('/login');
+  res.redirect("/");
+});
+
+//Routes for Google Account
+
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get("/auth/google/callback", (req, res, next) => {
+  passport.authenticate("google", (err, theUser, failureDetails) => {
+    if (err) {
+      return next(err);
+    }
+    req.login(theUser, (err) => {
+      if (err) {
+        // Session save went bad
+        return next(err);
+      }
+      console.log("HEYEYHJEYEHEY");
+      res.redirect("/feed");
+    });
+  })(req, res, next);
 });
 
 module.exports = router;

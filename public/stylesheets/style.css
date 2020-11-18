@@ -1,7 +1,26 @@
 body {
-  color: #fff;
-  background: #63738a;
-  font-family: 'Roboto', sans-serif; }
+  padding: 0px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+
+body {
+  font-family: 'Roboto', sans-serif;
+  height: 100vh; }
+
+.blue-background {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: url("../images/blackcolorful2.jpg");
+  background-repeat: no-repeat;
+  background-size: cover; }
+
+.homescreen-container {
+  color: white !important; }
+
+.custom-col {
+  z-index: 1; }
 
 .form-control {
   height: 40px;
@@ -86,6 +105,51 @@ body {
 .ssignupLogin-form form a:hover {
   text-decoration: underline; }
 
+.text-center {
+  color: #d1b720; }
+
+.text-center a {
+  color: #d1b720;
+  font-weight: bold; }
+
+.signupLoginbody {
+  background: url("../images/blackcolorful2.jpg");
+  background-repeat: no-repeat;
+  background-size: cover; }
+
 /*# sourceMappingURL=style.css.map */
+.target-container {
+  height: 200px;
+  width: 300px;
+  background-color: white; }
+
+.feed-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; }
+
+.post-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 100px;
+  background-color: #007bff66;
+  padding: 50px;
+  box-sizing: content-box;
+  border-radius: 20px; }
+
+.post-name-container {
+  display: flex;
+  justify-content: space-between; }
+
+.editor {
+  width: 300px;
+  height: 200px; }
+
+.editor-container {
+  border-radius: 20px;
+  width: 300px;
+  padding: 20px;
+  box-sizing: content-box;
+  background-color: #555; }
 
 /*# sourceMappingURL=style.css.map */

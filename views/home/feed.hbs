@@ -1,0 +1,6 @@
+<div class="feed-container">
+  <!-- LOGGED IN {{user.email}} {{user.lastname}} -->
+  {{#each posts}}
+  {{> post post=this user=../user }}
+  {{/each}}
+</div>
