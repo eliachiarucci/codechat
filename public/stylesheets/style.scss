@@ -3,13 +3,7 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-// a {
-//   color: #00B7FF;
-// }
-
 body {
-	// color: #fff;
-	// background: #63738a;
 	font-family: 'Roboto', sans-serif;
 	height: 100vh;
 }
@@ -26,12 +20,33 @@ body {
 }
 
 .homescreen-container {
-	color: white !important;
+  color: rgb(240, 209, 74) !important; 
 }
 
 .custom-col {
 	z-index: 1;
 }
+
+/* glowing for title */
+
+.custom-col h1{
+  font-family: cursive;
+  font-size: 80px;
+  color: rgba(202, 176, 25, 0.774);
+  text-align: center;
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
+}
+  @-webkit-keyframes glow {
+    from {
+      text-shadow: 0 0 10px rgb(10, 10, 4), 0 0 20px #fff, 0 0 30px #e6c400, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+    }
+    
+    to {
+      text-shadow: 0 0 20px #fff, 0 0 30px #1f12cf, 0 0 40px #ff4da6, 0 0 50px #ff714d, 0 0 60px #4dff6b, 0 0 70px #ff4da6, 0 0 80px #4dfff0;
+    }
+  }
 
 .form-control {
   height: 40px;
@@ -121,7 +136,8 @@ body {
   }
 .text-center a{
     color:rgb(209, 183, 32);
-    font-weight: bold;
+    font-size:20px;
+    font-weight: bold; 
   }
 
 .signupLoginbody{
@@ -129,7 +145,6 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
 }
-/*# sourceMappingURL=style.css.map */
 
 .target-container {
   height: 200px;
@@ -170,4 +185,10 @@ body {
   box-sizing: content-box;
   background-color: #555;
 }
+
+.error-message {
+  color:red;
+  font-weight: bold
+}
+
 

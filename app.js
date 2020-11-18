@@ -18,6 +18,8 @@ const flash = require("connect-flash");
 const { format } = require("date-fns");
 //for Google account
 var GoogleStrategy = require("passport-google-oauth20").Strategy;
+//for adding file 
+const Picture = require('./models/picture');
 
 mongoose
   .connect(
@@ -130,6 +132,7 @@ passport.use(
   )
 );
 
+
 // Express View engine setup
 app.use(
   require("node-sass-middleware")({
@@ -170,6 +173,5 @@ app.use("/", auth);
 const router = require("./routes/auth.routes");
 app.use("/", router);
 
-//Log In with Google Account
 
 module.exports = app;

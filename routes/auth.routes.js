@@ -12,6 +12,9 @@ const bcrypt = require("bcrypt");
 const { mainModule } = require("process");
 const bcryptSalt = 10;
 
+//File Upload
+const multer = require('multer');
+
 /*********************************************************************************************************************
  *                                                   SIGN UP                                                         *
  *********************************************************************************************************************/
@@ -251,25 +254,45 @@ router.get(
 
 router.get(
   "/auth/google/callback",
- // passport.authenticate("google", { failureRedirect: "/login" }),
+  // passport.authenticate("google", { failureRedirect: "/login" }),
   function (req, res, next) {
     passport.authenticate("google", (err, theUser, failureDetails) => {
-       if (err) {
+      if (err) {
         // Something went wrong authenticating user
         return next(err);
       }
-      console.log("user ",theUser);
+      console.log("user ", theUser);
       // save user in session: req.user
-     
+
       req.login(theUser, (err) => {
         if (err) {
           // Session save went bad
           return next(err);
         }
-       // req.user = theUser;
+        // req.user = theUser;
         res.redirect("/feed");
       });
     })(req, res, next);
   })
+
+//for adding file || pictures
+const upload = multer({ dest: './public/uploads/' });
+
+router.post('/upload', upload.single('photo'), (req, res, next) => {
+  const picture = new Picture({
+    name: req.body.name,
+    path: `/uploads/${req.file.filename}`,
+    originalName: req.file.originalname
+  });
+
+  picture
+    .save()
+    .then(() => {
+      res.redirect('/');
+    })
+    .catch(err => {
+      next(error);
+    });
+});
 
 module.exports = router;
