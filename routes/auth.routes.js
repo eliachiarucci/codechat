@@ -103,7 +103,6 @@ router.get("/login", (req, res, next) => res.render("auth/login"));
 //POST route ==> to process form data
 router.post("/login", (req, res, next) => {
   const { email, password } = req.body;
-  console.log("USER: ", "theUser");
   if (!email || !password) {
     res.render("auth/login", {
       email,
@@ -113,7 +112,6 @@ router.post("/login", (req, res, next) => {
   }
 
   passport.authenticate("local", (err, theUser, failureDetails) => {
-    console.log("USER: ", theUser);
     if (err) {
       // Something went wrong authenticating user
       return next(err);
@@ -160,7 +158,6 @@ router.post(
 );
 
 router.get("/feed", (req, res) => {
-  console.log(req.user);
   if (!req.user) {
     res.redirect("/");
   } else {
@@ -187,13 +184,8 @@ router.get("/newpost", (req, res) => {
 router.post("/newpost", (req, res) => {
   let { id } = req.user;
   const { text, html, css, js } = req.body;
-  console.log(id);
-
   Post.create({ text, html, css, js, author: id })
-    .then(
-      (newpost) => console.log(newpost),
-      res.send("new post created succesfully!")
-    )
+    .then((newpost) => res.send("new post created succesfully!"))
     .carch((err) => console.error(err));
 });
 
@@ -229,7 +221,7 @@ router.post("/deletepost/:postID", (req, res) => {
       if (id == post.author) {
         Post.findByIdAndDelete(postID)
           .then(() => res.redirect("/feed"))
-          .catch((err) => console.log(err));
+          .catch((err) => console.error(err));
       } else {
         res.redirect("/feed");
       }
@@ -259,7 +251,6 @@ router.get("/auth/google/callback", (req, res, next) => {
         // Session save went bad
         return next(err);
       }
-      console.log("HEYEYHJEYEHEY");
       res.redirect("/feed");
     });
   })(req, res, next);

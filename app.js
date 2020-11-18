@@ -100,7 +100,6 @@ passport.use(
       User.find({ email: email })
         .then((currentUser) => {
           if (currentUser.length !== 0) {
-            console.log("INSIDE STRATEGY: DATABASE CHECK GOOGLE");
             done(null, currentUser);
           } else {
             const { given_name, family_name, picture } = profile._json;
@@ -111,13 +110,12 @@ passport.use(
               imageUrl: picture,
             })
               .then((newUser) => {
-                console.log("new user", newUser);
                 done(null, newUser);
               })
-              .catch((err) => console.log(err));
+              .catch((err) => console.error(err));
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     }
   )
 );
@@ -145,7 +143,6 @@ passport.serializeUser((user, cb) => cb(null, user));
 
 // Passport deserialize
 passport.deserializeUser((id, cb) => {
-  console.log("IDIDIDIDIDI!!!!!! ", id);
   User.findById(id)
     .then((user) => cb(null, user))
     .catch((err) => cb(err));
