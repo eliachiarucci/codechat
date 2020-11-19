@@ -88,7 +88,6 @@ router.post("/signup", (req, res, next) => {
             lastname,
             email,
             password: hashedPassword,
-            confirmpassword,
           });
 
           newUser
