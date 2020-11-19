@@ -12,14 +12,19 @@ const bcrypt = require("bcrypt");
 const { mainModule } = require("process");
 const bcryptSalt = 10;
 
-//File Upload
-const multer = require('multer');
-
 /*********************************************************************************************************************
  *                                                   SIGN UP                                                         *
  *********************************************************************************************************************/
 //GET route ==> to display the signup form to users.
 router.get("/signup", (req, res, next) => res.render("auth/signup"));
+
+
+// router.get('/signup', (req, res, next) => {
+//   Picture.find()
+//     .then(pictures => res.render('signup', { pictures })
+//     .catch(error => next(error)))
+// });
+
 
 //POST route ==> to process form data
 router.post("/signup", (req, res, next) => {
@@ -174,7 +179,7 @@ router.get("/feed", (req, res) => {
           user: req.user,
           posts,
         });
-      })
+      }) 
       .catch((err) => res.send("There has been an error"));
   }
 });
@@ -275,24 +280,10 @@ router.get(
     })(req, res, next);
   })
 
-//for adding file || pictures
-const upload = multer({ dest: './public/uploads/' });
+//Privacy part in sign up 
 
-router.post('/upload', upload.single('photo'), (req, res, next) => {
-  const picture = new Picture({
-    name: req.body.name,
-    path: `/uploads/${req.file.filename}`,
-    originalName: req.file.originalname
-  });
+router.get("/privacy", (req, res, next) => res.render("privacy"));
 
-  picture
-    .save()
-    .then(() => {
-      res.redirect('/');
-    })
-    .catch(err => {
-      next(error);
-    });
-});
 
 module.exports = router;
+

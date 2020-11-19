@@ -24,7 +24,6 @@ body {
 
 /* glowing for title */
 .custom-col h1 {
-  font-family: cursive;
   font-size: 80px;
   color: rgba(202, 176, 25, 0.774);
   text-align: center;
@@ -171,6 +170,5 @@ body {
 .error-message {
   color: red;
   font-weight: bold; }
-  
 
 /*# sourceMappingURL=style.css.map */
