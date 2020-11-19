@@ -1,10 +1,12 @@
-<h1>
-  LOGGED IN AS {{user.email}} {{user.lastname}}
+<div class="new-post-wrap">
   <form name="newpost" action="/newpost" method="POST">
-    <input type="text" name="text">
+    <p>Post text:</p>
+    <textarea type="text" name="text"></textarea>
   </form>
+  <br>
   {{> codeEditor}}
-  <button onclick="submitForm()">Submit </button>
+  <br>
+  <button class="btn btn-warning" onclick="submitForm()">Submit </button>
   <script>
     function submitForm() {
       let form = document.forms["newpost"];
@@ -25,4 +27,4 @@
       form.append(newInput);
     }
   </script>
-</h1>
+</div>

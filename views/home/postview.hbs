@@ -1,0 +1,10 @@
+{{#each posts}}
+<div class="postview-wrap">
+  {{> post post=this user=../user }}
+  <form class="new-comment-form" action="/post/{{this.id}}/addcomment" method="POST">
+    <p>New post:</p>
+    <textarea name="text"></textarea>
+    <input type="submit" class="btn btn-warning btn-sm" value="Add comment">
+  </form>
+</div>
+{{/each}}
