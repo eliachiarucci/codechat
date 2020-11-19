@@ -7,6 +7,9 @@ const User = require("../models/User.model.js");
 // Post model
 const Post = require("../models/Post.model");
 
+// Comment model
+const Comment = require("../models/Comment.model");
+
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const { mainModule } = require("process");
@@ -163,6 +166,14 @@ router.get("/feed", (req, res) => {
   } else {
     Post.find()
       .populate("author")
+      .populate("comments")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author",
+          model: "User",
+        },
+      })
       .then((posts) => {
         res.render("home/feed", {
           user: req.user,
@@ -227,6 +238,38 @@ router.post("/deletepost/:postID", (req, res) => {
       }
     })
     .catch((err) => console.error(err));
+});
+
+router.get("/post/:postID", (req, res) => {
+  let { postID } = req.params;
+  Post.findById(postID)
+    .populate("author")
+    .populate("comments")
+    .populate({
+      path: "comments",
+      populate: {
+        path: "author",
+        model: "User",
+      },
+    })
+    .then((post) => {
+      console.log(post);
+      res.render("home/postview", { posts: [post], user: req.user });
+    })
+    .catch((err) => console.error(err));
+});
+
+router.post("/post/:postID/addcomment", (req, res) => {
+  const { postID } = req.params;
+  const { text } = req.body;
+  Post.findById(postID).then((post) => {
+    let newComment;
+    newComment = new Comment({ author: req.user._id, text });
+    newComment.save().then((comment) => {
+      post.comments.push(comment._id);
+      post.save().then((updatedPost) => res.redirect(`/post/${postID}`));
+    });
+  });
 });
 
 router.get("/logout", (req, res) => {

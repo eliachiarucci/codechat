@@ -1,19 +1,55 @@
 <div class="post-container">
   <div class="post-name-container">
-    <p>{{post.author.firstname}} {{post.author.lastname}}</p>
+    <h4>{{post.author.firstname}} {{post.author.lastname}}</h4>
     <p>{{formatDate post.createdAt}}</p>
+  </div>
+  <div class="text-buttons-wrap">
+    <p>{{post.text}}</p>
     {{#ifEquals user.id post.author._id}}
-    <div>
-      <a href="/modifypost/{{post.id}}">Modify</a>
+    <div class="post-buttons-container">
+      <form action="/modifypost/{{post.id}}" method="GET">
+        <input type="submit" value="Modify" class="btn btn-sm"></a>
+      </form>
+
       <form action="/deletepost/{{post.id}}" method="POST"
         onSubmit="return confirm('Are you sure you wish to delete?');">
-        <input type="submit" value="Delete">
+        <input type="submit" value="Delete" class="btn btn-sm">
       </form>
     </div>
     {{/ifEquals}}
   </div>
-  <p>{{post.text}}</p>
-
   {{> codeEditor post}}
-  <a href="">Comment</a>
+  <button id="commentButton{{post.id}}" class="btn">Show Comments</button>
+  <div id="commentsContainer{{post.id}}" class="comments-container" style="display: none;">
+    <a href="/post/{{post.id}}">Add comment</a>
+    <br>
+    {{#each post.comments}}
+    <div class="comment-wrap">
+      <div class="comment">
+        <h5>{{this.author.firstname}} {{this.author.lastname}}</h5>
+        <p>{{this.text}}</p>
+      </div>
+      {{#ifEquals ../user.id this.author.id}}
+      <form action="/post/{{post.id}}/modifycomment/{{this.id}}" method="GET">
+        <input type="submit" value="Modify" class="btn btn-sm"></a>
+      </form>
+
+      <form action="/post/{{post.id}}/deletecomment/{{this.id}}" method="POST"
+        onSubmit="return confirm('Are you sure you wish to delete?');">
+        <input type="submit" value="Delete" class="btn btn-sm">
+      </form>
+      {{/ifEquals}}
+    </div>
+    {{/each}}
+  </div>
 </div>
+
+<script>
+  (() => {
+    const commentButton = document.getElementById("commentButton{{post.id}}")
+    commentButton.addEventListener('click', () => {
+      const display = document.getElementById("commentsContainer{{post.id}}");
+      display.style.display === "flex" ? display.style.display = "none" : display.style.display = "flex";
+    })
+  })() 
+</script>
