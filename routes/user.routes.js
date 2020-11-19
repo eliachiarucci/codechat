@@ -18,6 +18,7 @@ router.get("/feed", checkUserStatus, (req, res) => {
       },
     })
     .then((posts) => {
+      posts = posts.reverse();
       res.render("home/feed", {
         user: req.user,
         posts,
@@ -91,7 +92,6 @@ router.get("/post/:postID", checkUserStatus, (req, res) => {
       },
     })
     .then((post) => {
-      console.log(post);
       res.render("home/postview", { posts: [post], user: req.user });
     })
     .catch((err) => console.error(err));
@@ -109,6 +109,30 @@ router.post("/post/:postID/addcomment", checkUserStatus, (req, res) => {
     });
   });
 });
+
+router.post(
+  "/post/:postID/modifycomment/:commentID",
+  checkUserStatus,
+  (req, res) => {
+    const { postID, commentID } = req.params;
+    const { text } = req.body;
+    Comment.findByIdAndUpdate(commentID, { text })
+      .then((comment) => res.redirect(`/post/${postID}`))
+      .catch((err) => console.error(err));
+  }
+);
+
+router.post(
+  "/post/:postID/deletecomment/:commentID",
+  checkUserStatus,
+  (req, res) => {
+    const { postID, commentID } = req.params;
+    const { text } = req.body;
+    Comment.findByIdAndDelete(commentID)
+      .then((comment) => res.redirect(`/post/${postID}`))
+      .catch((err) => console.error(err));
+  }
+);
 
 function checkUserStatus(req, res, next) {
   if (req.user) {
