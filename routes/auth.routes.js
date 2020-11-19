@@ -21,6 +21,14 @@ const bcryptSalt = 10;
 //GET route ==> to display the signup form to users.
 router.get("/signup", (req, res, next) => res.render("auth/signup"));
 
+
+// router.get('/signup', (req, res, next) => {
+//   Picture.find()
+//     .then(pictures => res.render('signup', { pictures })
+//     .catch(error => next(error)))
+// });
+
+
 //POST route ==> to process form data
 router.post("/signup", (req, res, next) => {
   const { firstname, lastname, email, password, confirmpassword } = req.body;
@@ -179,7 +187,7 @@ router.get("/feed", (req, res) => {
           user: req.user,
           posts,
         });
-      })
+      }) 
       .catch((err) => res.send("There has been an error"));
   }
 });
@@ -284,6 +292,7 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
+
 router.get("/auth/google/callback", (req, res, next) => {
   passport.authenticate("google", (err, theUser, failureDetails) => {
     if (err) {
@@ -299,4 +308,11 @@ router.get("/auth/google/callback", (req, res, next) => {
   })(req, res, next);
 });
 
+
+//Privacy part in sign up 
+
+router.get("/privacy", (req, res, next) => res.render("privacy"));
+
+
 module.exports = router;
+

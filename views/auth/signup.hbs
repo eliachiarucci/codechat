@@ -20,17 +20,34 @@
             <div class="form-group">
                 <input type="password" class="form-control" name="confirmpassword" placeholder="Confirm Password">
             </div>
-            <div class="form-group">
-                <label class="form-check-label"><input type="checkbox"> I accept the <a href="#">Terms of Use</a> &amp;
-                    <a href="#">Privacy Policy</a></label>
-            </div>
+            
+            <section>
+                <p>Select your profile picture</p>
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    <input type="file" name="photo" />
+                    <input type="submit" value="Save" />
+                    <br>
+                    <br>
+                    <div class="form-group">
+                        <label class="form-check-label"><input type="checkbox"> I accept the <a href="/privacy">Terms of
+                                Use</a> &amp; <a href="/privacy">Privacy Policy</a></label>
+                    </div>
+                </form>
+            </section>
+
+            <section>
+                {{#each pictures}}
+                <h3>{{ this.name }}</h3>
+                <img src="{{ this.path }}" alt="{{ this.originalName }}" />
+                {{/each}}
+            </section>
+
             <div class="form-group">
                 <button type="submit" class="btn btn-warning btn-lg btn-block">Register Now</button>
             </div>
+
             {{#if errorMessage }}
-            <p>
-                {{errorMessage}}
-            </p>
+            <p class="error-message"> {{errorMessage}} </p>
             {{/if}}
 
         </form>

@@ -19,6 +19,7 @@ const { format } = require("date-fns");
 //for Google account
 var GoogleStrategy = require("passport-google-oauth20").Strategy;
 
+
 mongoose
   .connect(
     "mongodb+srv://elia:codechat@cluster0.mdps2.mongodb.net/codechat?retryWrites=true&w=majority",
@@ -119,6 +120,7 @@ passport.use(
   )
 );
 
+
 // Express View engine setup
 app.use(
   require("node-sass-middleware")({
@@ -170,6 +172,5 @@ app.use("/", auth);
 const router = require("./routes/auth.routes");
 app.use("/", router);
 
-//Log In with Google Account
 
 module.exports = app;
