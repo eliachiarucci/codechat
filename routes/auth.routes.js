@@ -1,9 +1,12 @@
 const { Router } = require("express");
 const router = new Router();
 const { format } = require("date-fns");
-const fileUploader = require("../configs/cloudinary.config")
+const fileUploader = require("../configs/cloudinary.config");
 // User model
 const User = require("../models/User.model.js");
+
+// Post model
+const Post = require("../models/Post.model");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -24,7 +27,7 @@ router.get("/signup", checkUserStatus, (req, res, next) =>
 router.post("/signup", fileUploader.single("image"), (req, res, next) => {
   const { firstname, lastname, email, password, confirmpassword } = req.body;
 
-  console.log(req.file)
+  console.log(req.file);
 
   // 1. Check username and password are not empty
   if (!firstname || !lastname || !email || !password || !confirmpassword) {
@@ -81,7 +84,7 @@ router.post("/signup", fileUploader.single("image"), (req, res, next) => {
             lastname,
             email,
             password: hashedPassword,
-            imageUrl: req.file.path
+            imageUrl: req.file.path,
           });
 
           newUser
@@ -153,8 +156,6 @@ router.get("/login", checkUserStatus, (req, res, next) => {
   })
 );*/
 
-
-
 router.get("/feed", (req, res) => {
   if (!req.user) {
     res.redirect("/");
@@ -174,7 +175,7 @@ router.get("/feed", (req, res) => {
           user: req.user,
           posts,
         });
-      }) 
+      })
       .catch((err) => res.send("There has been an error"));
   }
 });
@@ -279,7 +280,6 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-
 router.get("/auth/google/callback", (req, res, next) => {
   passport.authenticate("google", (err, theUser, failureDetails) => {
     if (err) {
@@ -303,9 +303,7 @@ function checkUserStatus(req, res, next) {
   }
 }
 
-//Privacy part in sign up 
+//Privacy part in sign up
 router.get("/privacy", (req, res, next) => res.render("privacy"));
 
-
 module.exports = router;
-
