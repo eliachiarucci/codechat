@@ -7,6 +7,9 @@ const User = require("../models/User.model.js");
 // Post model
 const Post = require("../models/Post.model");
 
+// Comment model
+const Comment = require("../models/Comment.model");
+
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const { mainModule } = require("process");
@@ -111,7 +114,6 @@ router.get("/login", (req, res, next) => res.render("auth/login"));
 //POST route ==> to process form data
 router.post("/login", (req, res, next) => {
   const { email, password } = req.body;
-  console.log("USER: ", "theUser");
   if (!email || !password) {
     res.render("auth/login", {
       email,
@@ -121,7 +123,6 @@ router.post("/login", (req, res, next) => {
   }
 
   passport.authenticate("local", (err, theUser, failureDetails) => {
-    console.log("USER: ", theUser);
     if (err) {
       // Something went wrong authenticating user
       return next(err);
@@ -168,12 +169,19 @@ router.post(
 );
 
 router.get("/feed", (req, res) => {
-  console.log(req.user);
   if (!req.user) {
     res.redirect("/");
   } else {
     Post.find()
       .populate("author")
+      .populate("comments")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author",
+          model: "User",
+        },
+      })
       .then((posts) => {
         res.render("home/feed", {
           user: req.user,
@@ -195,14 +203,9 @@ router.get("/newpost", (req, res) => {
 router.post("/newpost", (req, res) => {
   let { id } = req.user;
   const { text, html, css, js } = req.body;
-  console.log(id);
-
   Post.create({ text, html, css, js, author: id })
-    .then(
-      (newpost) => console.log(newpost),
-      res.send("new post created succesfully!")
-    )
-    .carch((err) => console.error(err));
+    .then(() => res.redirect("/feed"))
+    .catch((err) => console.error(err));
 });
 
 router.get("/modifypost/:postID", (req, res) => {
@@ -237,12 +240,44 @@ router.post("/deletepost/:postID", (req, res) => {
       if (id == post.author) {
         Post.findByIdAndDelete(postID)
           .then(() => res.redirect("/feed"))
-          .catch((err) => console.log(err));
+          .catch((err) => console.error(err));
       } else {
         res.redirect("/feed");
       }
     })
     .catch((err) => console.error(err));
+});
+
+router.get("/post/:postID", (req, res) => {
+  let { postID } = req.params;
+  Post.findById(postID)
+    .populate("author")
+    .populate("comments")
+    .populate({
+      path: "comments",
+      populate: {
+        path: "author",
+        model: "User",
+      },
+    })
+    .then((post) => {
+      console.log(post);
+      res.render("home/postview", { posts: [post], user: req.user });
+    })
+    .catch((err) => console.error(err));
+});
+
+router.post("/post/:postID/addcomment", (req, res) => {
+  const { postID } = req.params;
+  const { text } = req.body;
+  Post.findById(postID).then((post) => {
+    let newComment;
+    newComment = new Comment({ author: req.user._id, text });
+    newComment.save().then((comment) => {
+      post.comments.push(comment._id);
+      post.save().then((updatedPost) => res.redirect(`/post/${postID}`));
+    });
+  });
 });
 
 router.get("/logout", (req, res) => {
@@ -257,28 +292,22 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-router.get(
-  "/auth/google/callback",
-  // passport.authenticate("google", { failureRedirect: "/login" }),
-  function (req, res, next) {
-    passport.authenticate("google", (err, theUser, failureDetails) => {
+
+router.get("/auth/google/callback", (req, res, next) => {
+  passport.authenticate("google", (err, theUser, failureDetails) => {
+    if (err) {
+      return next(err);
+    }
+    req.login(theUser, (err) => {
       if (err) {
-        // Something went wrong authenticating user
+        // Session save went bad
         return next(err);
       }
-      console.log("user ", theUser);
-      // save user in session: req.user
+      res.redirect("/feed");
+    });
+  })(req, res, next);
+});
 
-      req.login(theUser, (err) => {
-        if (err) {
-          // Session save went bad
-          return next(err);
-        }
-        // req.user = theUser;
-        res.redirect("/feed");
-      });
-    })(req, res, next);
-  })
 
 //Privacy part in sign up 
 

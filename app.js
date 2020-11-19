@@ -12,7 +12,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const bcrypt = require("bcrypt");
 const passport = require("passport");
-const User = require("./models/User.model");
+const User = require("./models/User.model.js");
 const LocalStrategy = require("passport-local").Strategy;
 const flash = require("connect-flash");
 const { format } = require("date-fns");
@@ -59,19 +59,6 @@ app.use(
   })
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Passport serialize
-passport.serializeUser((user, cb) => cb(null, user));
-
-// Passport deserialize
-passport.deserializeUser((id, cb) => {
-  User.findById(id)
-    .then((user) => cb(null, user))
-    .catch((err) => cb(err));
-});
-
 // Passport LocalStrategy
 passport.use(
   new LocalStrategy(
@@ -104,29 +91,31 @@ app.use(flash());
 passport.use(
   new GoogleStrategy(
     {
-      clientID:
-        "983568792623-99315tdls9o7uk3tr42klmf31v786065.apps.googleusercontent.com",
-      clientSecret: "anWXv2HWemRERTGV4nLccgUH",
-      callbackURL: "http://localhost:3000/auth/google/callback",
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/auth/google/callback",
     },
-    function (accessToken, refreshToken, profile, cb) {
-      console.log('profile', profile)
-      User.find({ email: profile._json.email })
-        .then(currentUser => {
-          if(currentUser){
-            cb(null, currentUser);
+    function (accessToken, refreshToken, profile, done) {
+      const email = profile._json.email;
+      User.find({ email: email })
+        .then((currentUser) => {
+          if (currentUser.length !== 0) {
+            done(null, currentUser);
+          } else {
+            const { given_name, family_name, picture } = profile._json;
+            return User.create({
+              firstname: given_name,
+              lastname: family_name,
+              email,
+              imageUrl: picture,
+            })
+              .then((newUser) => {
+                done(null, newUser);
+              })
+              .catch((err) => console.error(err));
           }
-          else{
-            const { givenName, familyName } = profile.name;
-           return User.create({firstName: givenName, lastName: familyName, googleId: profile.id})
-                    .then(newUser => {
-                      console.log('new user', newUser)
-                      cb(null, newUser);
-                    })
-                    .catch(err => console.log(err))
-           }
         })
-        .catch(err => console.log(err))
+        .catch((err) => console.error(err));
     }
   )
 );
@@ -150,6 +139,16 @@ app.use(function (req, res, next) {
   next();
 });
 
+// Passport serialize
+passport.serializeUser((user, cb) => cb(null, user));
+
+// Passport deserialize
+passport.deserializeUser((id, cb) => {
+  User.findById(id)
+    .then((user) => cb(null, user))
+    .catch((err) => cb(err));
+});
+
 hbs.registerPartials("views/partials");
 hbs.registerHelper("ifEquals", function (arg1, arg2, options) {
   return arg1 == arg2 ? options.fn(this) : options.inverse(this);
@@ -162,7 +161,8 @@ hbs.registerHelper("object", function ({ hash }) {
 });
 // default value for title local
 app.locals.title = "Express - Generated with IronGenerator";
-
+app.use(passport.initialize());
+app.use(passport.session());
 const main = require("./routes/main.routes");
 app.use("/", main);
 

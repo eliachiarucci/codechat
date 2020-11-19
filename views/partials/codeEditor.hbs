@@ -1,20 +1,42 @@
 <div class="editor-container">
-  <button class="btn btn-primary switchtab{{this.id}}" tab="html{{this.id}}">HTML</button>
-  <button class="btn btn-primary switchtab{{this.id}}" tab="css{{this.id}}">CSS</button>
-  <button class="btn btn-primary switchtab{{this.id}}" tab="js{{this.id}}">JS</button>
-  <div id="html{{this.id}}" class="editor editor{{this.id}}" style="display: block;">{{this.html}}</div>
-  <div id="css{{this.id}}" class="editor editor{{this.id}}" style="display: none;">{{this.css}}</div>
-  <div id="js{{this.id}}" class="editor editor{{this.id}}" style="display: none;">{{this.js}}</div>
-  <button class="btn btn-primary" id="runcode{{this.id}}">RUN CODE</button>
+  <div class="editor-target-wrap">
+    <div class="editor-wrap">
+      <div class="tabs-button-container">
+        <button class="btn switchtab{{this.id}}" tab="html{{this.id}}">HTML</button>
+        <button class="btn switchtab{{this.id}}" tab="css{{this.id}}">CSS</button>
+        <button class="btn switchtab{{this.id}}" tab="js{{this.id}}">JS</button>
+      </div>
+      <div class="editor-target-container">
+        <div id="html{{this.id}}" class="editor editor{{this.id}}" style="display: block;">{{this.html}}</div>
+        <div id="css{{this.id}}" class="editor editor{{this.id}}" style="display: none;">{{this.css}}</div>
+        <div id="js{{this.id}}" class="editor editor{{this.id}}" style="display: none;">{{this.js}}</div>
+      </div>
+    </div>
+    <div id="target{{this.id}}" class="target-container"></div>
+  </div>
+  <button class="btn btn-warning btn-sm run-code-button" id="runcode{{this.id}}">RUN CODE</button>
   <div id="console{{this.id}}"></div>
-  <div id="target{{this.id}}" class="target-container"></div>
 </div>
 <script>
 
   (function () {
-    ace.edit("html{{this.id}}");
-    ace.edit("css{{this.id}}");
-    ace.edit("js{{this.id}}");
+    ace.config.set('basePath', 'https://pagecdn.io/lib/ace/1.4.12/');
+
+    ace.edit("html{{this.id}}", {
+      enableEmmet: true,
+      mode: "ace/mode/html",
+      theme: "ace/theme/tomorrow_night"
+    });
+    ace.edit("css{{this.id}}", {
+      enableEmmet: true,
+      mode: "ace/mode/css",
+      theme: "ace/theme/tomorrow_night"
+    });
+    ace.edit("js{{this.id}}", {
+      enableEmmet: true,
+      mode: "ace/mode/javascript",
+      theme: "ace/theme/tomorrow_night"
+    });
 
     let switchtabs = document.getElementsByClassName("switchtab{{this.id}}")
     for (let i = 0; i < switchtabs.length; i++) {
