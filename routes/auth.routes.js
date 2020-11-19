@@ -5,12 +5,6 @@ const fileUploader = require("../configs/cloudinary.config")
 // User model
 const User = require("../models/User.model.js");
 
-// Post model
-const Post = require("../models/Post.model");
-
-// Comment model
-const Comment = require("../models/Comment.model");
-
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const { mainModule } = require("process");
@@ -20,12 +14,10 @@ const bcryptSalt = 10;
  *                                                   SIGN UP                                                         *
  *********************************************************************************************************************/
 //GET route ==> to display the signup form to users.
-// router.get("/signup", (req, res, next) => res.render("auth/signup"));
 
-router.get("/signup", (req, res, next) => {
-  res.render('auth/signup')
-});
-
+router.get("/signup", checkUserStatus, (req, res, next) =>
+  res.render("auth/signup")
+);
 
 //POST route ==> to process form data
 // here is where we have to work with the picture
@@ -110,7 +102,9 @@ const passport = require("passport");
 const { populate } = require("../models/User.model.js");
 
 //GET route ==> to display the login form to users.
-router.get("/login", (req, res, next) => res.render("auth/login"));
+router.get("/login", checkUserStatus, (req, res, next) =>
+  res.render("auth/login")
+);
 
 //POST route ==> to process form data
 router.post("/login", (req, res, next) => {
@@ -146,28 +140,20 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
-router.get("/login", (req, res, next) => {
+router.get("/login", checkUserStatus, (req, res, next) => {
   res.render("auth/login", { errorMessage: req.flash("error") }); // !!!
 });
 
-//Private page -for only people who have account access this page
-router.get("/private-page", (req, res) => {
-  if (!req.user) {
-    res.redirect("/login"); // can't access the page, so go and log in
-    return;
-  }
-  // ok, req.email is defined
-  res.render("private", { email: req.email });
-});
-
-router.post(
+/*router.post(
   "/login",
   passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/login",
     failureFlash: true, // !!!
   })
-);
+);*/
+
+
 
 router.get("/feed", (req, res) => {
   if (!req.user) {
@@ -309,6 +295,13 @@ router.get("/auth/google/callback", (req, res, next) => {
   })(req, res, next);
 });
 
+function checkUserStatus(req, res, next) {
+  if (!req.user) {
+    next();
+  } else {
+    res.redirect("/feed");
+  }
+}
 
 //Privacy part in sign up 
 router.get("/privacy", (req, res, next) => res.render("privacy"));

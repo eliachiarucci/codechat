@@ -171,8 +171,8 @@ app.use("/", main);
 const auth = require("./routes/auth.routes");
 app.use("/", auth);
 
-const router = require("./routes/auth.routes");
-app.use("/", router);
+const user = require("./routes/user.routes");
+app.use("/", user);
 
 
 module.exports = app;
