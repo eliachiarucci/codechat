@@ -196,8 +196,8 @@ router.post("/newpost", (req, res) => {
   let { id } = req.user;
   const { text, html, css, js } = req.body;
   Post.create({ text, html, css, js, author: id })
-    .then((newpost) => res.send("new post created succesfully!"))
-    .carch((err) => console.error(err));
+    .then(() => res.redirect("/feed"))
+    .catch((err) => console.error(err));
 });
 
 router.get("/modifypost/:postID", (req, res) => {
