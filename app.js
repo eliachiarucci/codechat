@@ -159,6 +159,8 @@ hbs.registerHelper("formatDate", function (date) {
 hbs.registerHelper("object", function ({ hash }) {
   return hash;
 });
+
+
 // default value for title local
 app.locals.title = "Express - Generated with IronGenerator";
 app.use(passport.initialize());

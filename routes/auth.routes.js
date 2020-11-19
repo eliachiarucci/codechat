@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const router = new Router();
 const { format } = require("date-fns");
+const fileUploader = require("../configs/cloudinary.config")
 // User model
 const User = require("../models/User.model.js");
 
@@ -19,19 +20,19 @@ const bcryptSalt = 10;
  *                                                   SIGN UP                                                         *
  *********************************************************************************************************************/
 //GET route ==> to display the signup form to users.
-router.get("/signup", (req, res, next) => res.render("auth/signup"));
+// router.get("/signup", (req, res, next) => res.render("auth/signup"));
 
-
-// router.get('/signup', (req, res, next) => {
-//   Picture.find()
-//     .then(pictures => res.render('signup', { pictures })
-//     .catch(error => next(error)))
-// });
+router.get("/signup", (req, res, next) => {
+  res.render('auth/signup')
+});
 
 
 //POST route ==> to process form data
-router.post("/signup", (req, res, next) => {
+// here is where we have to work with the picture
+router.post("/signup", fileUploader.single("image"), (req, res, next) => {
   const { firstname, lastname, email, password, confirmpassword } = req.body;
+
+  console.log(req.file)
 
   // 1. Check username and password are not empty
   if (!firstname || !lastname || !email || !password || !confirmpassword) {
@@ -88,7 +89,7 @@ router.post("/signup", (req, res, next) => {
             lastname,
             email,
             password: hashedPassword,
-            confirmpassword,
+            imageUrl: req.file.path
           });
 
           newUser
@@ -310,7 +311,6 @@ router.get("/auth/google/callback", (req, res, next) => {
 
 
 //Privacy part in sign up 
-
 router.get("/privacy", (req, res, next) => res.render("privacy"));
 
 
