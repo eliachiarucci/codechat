@@ -19,6 +19,7 @@ const { format } = require("date-fns");
 //for Google account
 var GoogleStrategy = require("passport-google-oauth20").Strategy;
 
+
 mongoose
   .connect(
     "mongodb+srv://elia:codechat@cluster0.mdps2.mongodb.net/codechat?retryWrites=true&w=majority",
@@ -119,6 +120,7 @@ passport.use(
   )
 );
 
+
 // Express View engine setup
 app.use(
   require("node-sass-middleware")({
@@ -157,6 +159,8 @@ hbs.registerHelper("formatDate", function (date) {
 hbs.registerHelper("object", function ({ hash }) {
   return hash;
 });
+
+
 // default value for title local
 app.locals.title = "Express - Generated with IronGenerator";
 app.use(passport.initialize());
@@ -170,6 +174,5 @@ app.use("/", auth);
 const user = require("./routes/user.routes");
 app.use("/", user);
 
-//Log In with Google Account
 
 module.exports = app;

@@ -18,10 +18,25 @@ body {
   background-size: cover; }
 
 .homescreen-container {
-  color: white !important; }
+  color: #f0d14a !important; }
 
 .custom-col {
   z-index: 1; }
+
+/* glowing for title */
+.custom-col h1 {
+  font-size: 80px;
+  color: rgba(202, 176, 25, 0.774);
+  text-align: center;
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate; }
+
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 0 0 10px #0a0a04, 0 0 20px #fff, 0 0 30px #e6c400, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073; }
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #1f12cf, 0 0 40px #ff4da6, 0 0 50px #ff714d, 0 0 60px #4dff6b, 0 0 70px #ff4da6, 0 0 80px #4dfff0; } }
 
 .form-control {
   height: 40px;
@@ -111,6 +126,7 @@ body {
 
 .text-center a {
   color: #d1b720;
+  font-size: 20px;
   font-weight: bold; }
 
 .signupLoginbody {
@@ -270,8 +286,24 @@ a {
 .new-post-wrap form {
   width: 100%; }
 
+.error-message {
+  color: red;
+  font-weight: bold; }
+
 .new-post-wrap textarea {
   width: 100%;
   height: 50px; }
+
+.privacypage {
+  margin-left: 200px;
+  background-color: black;
+  text-align: center;
+  width: 75%; }
+
+.privacypage h3 {
+  color: #f3c839; }
+
+.privacypage p {
+  color: #ecdba2; }
 
 /*# sourceMappingURL=style.css.map */
