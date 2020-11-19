@@ -1,6 +1,6 @@
 <body class="signupLoginbody">
     <div class="signupLogin-form">
-        <form action="/signup" method="post">
+        <form action="/signup" method="post" enctype="multipart/form-data">
             <h2>Register</h2>
             <p class="hint-text">Create your account. It's free and only takes a minute.</p>
             <div class="form-group">
@@ -20,28 +20,15 @@
             <div class="form-group">
                 <input type="password" class="form-control" name="confirmpassword" placeholder="Confirm Password">
             </div>
-            
+
             <section>
                 <p>Select your profile picture</p>
-                <form action="/upload" method="post" enctype="multipart/form-data">
-                    <input type="file" name="photo" />
-                    <input type="submit" value="Save" />
-                    <br>
-                    <br>
-                    <div class="form-group">
-                        <label class="form-check-label"><input type="checkbox"> I accept the <a href="/privacy">Terms of
-                                Use</a> &amp; <a href="/privacy">Privacy Policy</a></label>
-                    </div>
-                </form>
-            </section>
 
-            <section>
-                {{#each pictures}}
-                <h3>{{ this.name }}</h3>
-                <img src="{{ this.path }}" alt="{{ this.originalName }}" />
-                {{/each}}
+                <div class="form-group">
+                    <label for="image-input">Image:</label>
+                    <input type="file" name="image" id="image-input" class="form-control-file" />
+                </div>
             </section>
-
             <div class="form-group">
                 <button type="submit" class="btn btn-warning btn-lg btn-block">Register Now</button>
             </div>
