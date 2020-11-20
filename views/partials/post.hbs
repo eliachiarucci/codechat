@@ -1,6 +1,9 @@
 <div class="post-container">
   <div class="post-name-container">
-    <h4>{{post.author.firstname}} {{post.author.lastname}}</h4>
+    <div class="img-name-wrap">
+      <img class="post-profile-img" src="{{post.author.imageUrl}}" alt="">
+      <h4>{{post.author.firstname}} {{post.author.lastname}}</h4>
+    </div>
     <p>{{formatDate post.createdAt}}</p>
   </div>
   <div class="text-buttons-wrap">
@@ -27,14 +30,12 @@
     <div class="comment-wrap">
       <div class="comment">
         <h5>{{this.author.firstname}} {{this.author.lastname}}</h5>
-        <p>{{this.text}}</p>
+        <p id="comment-text-{{this.id}}">{{this.text}}</p>
       </div>
       {{#ifEquals ../user.id this.author.id}}
-      <form action="/post/{{post.id}}/modifycomment/{{this.id}}" method="GET">
-        <input type="submit" value="Modify" class="btn btn-sm"></a>
-      </form>
+      <button style="align-self: baseline;" class="btn btn-sm" id="modifyCommentButton{{this.id}}">Modify</button>
 
-      <form action="/post/{{post.id}}/deletecomment/{{this.id}}" method="POST"
+      <form action="/post/{{../post.id}}/deletecomment/{{this.id}}" method="POST"
         onSubmit="return confirm('Are you sure you wish to delete?');">
         <input type="submit" value="Delete" class="btn btn-sm">
       </form>

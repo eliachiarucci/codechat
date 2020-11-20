@@ -19,7 +19,7 @@
 </div>
 <script>
 
-  (function () {
+  (() => {
     ace.config.set('basePath', 'https://pagecdn.io/lib/ace/1.4.12/');
 
     ace.edit("html{{this.id}}", {
@@ -43,14 +43,13 @@
       switchtabs[i].addEventListener('click', (e) => {
         const editorTargetId = e.target.getAttribute("tab");
         const buttonTabTarget = e.target;
-        const buttonTabs = document.getElementsByClassName("btn-tab");
         let editors = document.getElementsByClassName("editor{{this.id}}");
         for (let i = 0; i < editors.length; i++) {
           editors[i].style.display = "none";
         }
 
-        for (let i = 0; i < editors.length; i++) {
-          buttonTabs[i].classList.remove("code-tab-active")
+        for (let i = 0; i < switchtabs.length; i++) {
+          switchtabs[i].classList.remove("code-tab-active")
         }
 
         document.getElementById(editorTargetId).style.display = "block";
@@ -84,7 +83,7 @@
       element.append(newDiv);
 
     })
-  }())
+  })()
 
 
 

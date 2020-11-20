@@ -1,10 +1,70 @@
 {{#each posts}}
 <div class="postview-wrap">
   {{> post post=this user=../user }}
-  <form class="new-comment-form" action="/post/{{this.id}}/addcomment" method="POST">
-    <p>New post:</p>
-    <textarea name="text"></textarea>
-    <input type="submit" class="btn btn-warning btn-sm" value="Add comment">
-  </form>
 </div>
+
+
+<script>
+  (() => {
+    const newForm = document.createElement("form");
+    newForm.classList.add("new-comment-form");
+    newForm.action = "/post/{{this.id}}/addcomment";
+    newForm.method = "POST";
+
+    const text = document.createElement("p");
+    text.innerHTML = "New comment:"
+
+    const textArea = document.createElement("textarea");
+    textArea.name = "text";
+
+    const input = document.createElement("input");
+    input.type = "submit";
+    input.classList.add("btn", "btn-warning", "btn-sm");
+    input.value = "Add comment";
+
+    newForm.appendChild(text);
+    newForm.appendChild(textArea);
+    newForm.appendChild(input);
+    const target = document.getElementById("commentsContainer{{this.id}}");
+    target.removeChild(target.children[0]);
+    target.prepend(newForm);
+    target.style.display = "flex";
+
+  })();
+</script>
+
+{{#each this.comments}}
+{{#ifEquals ../../user.id this.author.id}}
+<script>
+  (() => {
+    const modifyButton = document.getElementById("modifyCommentButton{{this.id}}");
+    console.log("here", modifyButton)
+    modifyButton.addEventListener('click', () => {
+      const commentP = document.getElementById("comment-text-{{this.id}}");
+      commentP.contentEditable = true;
+      commentP.focus();
+      commentP.addEventListener('keypress', (e) => {
+        if (e.keyCode === 13 && e.shiftKey === false) {
+          e.preventDefault();
+          e.stopPropagation();
+          const newForm = document.createElement("form");
+          newForm.action = "/post/{{../this.id}}/modifycomment/{{this.id}}";
+          newForm.method = "POST"
+          newForm.style.display = "none";
+
+          const newInput = document.createElement("input");
+          newInput.name = "text";
+          newInput.value = commentP.innerHTML;
+
+          newForm.appendChild(newInput);
+          document.body.appendChild(newForm);
+          newForm.submit();
+        }
+      })
+    })
+  })()
+</script>
+{{/ifEquals}}
+{{/each}}
+
 {{/each}}

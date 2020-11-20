@@ -1,12 +1,15 @@
 const { Router } = require("express");
 const router = new Router();
 const { format } = require("date-fns");
-const fileUploader = require("../configs/cloudinary.config")
+const fileUploader = require("../configs/cloudinary.config");
 // User model
 const User = require("../models/User.model.js");
 
 // Post model
 const Post = require("../models/Post.model");
+
+// Comment model
+const Comment = require("../models/Comment.model");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -27,7 +30,7 @@ router.get("/signup", checkUserStatus, (req, res, next) =>
 router.post("/signup", fileUploader.single("image"), (req, res, next) => {
   const { firstname, lastname, email, password, confirmpassword } = req.body;
 
-  console.log(req.file)
+  console.log(req.file);
 
   // 1. Check username and password are not empty
   if (!firstname || !lastname || !email || !password || !confirmpassword) {
@@ -84,12 +87,12 @@ router.post("/signup", fileUploader.single("image"), (req, res, next) => {
             lastname,
             email,
             password: hashedPassword,
-            imageUrl: req.file.path
+            imageUrl: req.file.path,
           });
 
           newUser
             .save()
-            .then(() => res.redirect("/feed")) //shoud add main routes
+            .then(() => res.redirect("/login"))
             .catch((err) => next(err));
         })
         .catch((err) => next(err));
@@ -156,120 +159,6 @@ router.get("/login", checkUserStatus, (req, res, next) => {
   })
 );*/
 
-
-
-router.get("/feed", (req, res) => {
-  if (!req.user) {
-    res.redirect("/");
-  } else {
-    Post.find()
-      .populate("author")
-      .populate("comments")
-      .populate({
-        path: "comments",
-        populate: {
-          path: "author",
-          model: "User",
-        },
-      })
-      .then((posts) => {
-        res.render("home/feed", {
-          user: req.user,
-          posts,
-        });
-      }) 
-      .catch((err) => res.send("There has been an error"));
-  }
-});
-
-router.get("/newpost", (req, res) => {
-  if (!req.user) {
-    res.redirect("/");
-  } else {
-    res.render("home/newpost", { user: req.user });
-  }
-});
-
-router.post("/newpost", (req, res) => {
-  let { id } = req.user;
-  const { text, html, css, js } = req.body;
-  Post.create({ text, html, css, js, author: id })
-    .then(() => res.redirect("/feed"))
-    .catch((err) => console.error(err));
-});
-
-router.get("/modifypost/:postID", (req, res) => {
-  let { id } = req.user;
-  let { postID } = req.params;
-  Post.findById(postID)
-    .then((post) => {
-      if (id == post.author) {
-        res.render("home/modify", { user: req.user, post });
-      } else {
-        res.redirect("/feed");
-      }
-    })
-    .catch((err) => console.error(err));
-});
-
-router.post("/modifypost/:postID", (req, res) => {
-  let { postID } = req.params;
-  let modifyObject = req.body;
-  Post.findByIdAndUpdate(postID, modifyObject)
-    .then((post) => {
-      res.redirect("/feed");
-    })
-    .catch((err) => console.error(err));
-});
-
-router.post("/deletepost/:postID", (req, res) => {
-  const { id } = req.user;
-  let { postID } = req.params;
-  Post.findById(postID)
-    .then((post) => {
-      if (id == post.author) {
-        Post.findByIdAndDelete(postID)
-          .then(() => res.redirect("/feed"))
-          .catch((err) => console.error(err));
-      } else {
-        res.redirect("/feed");
-      }
-    })
-    .catch((err) => console.error(err));
-});
-
-router.get("/post/:postID", (req, res) => {
-  let { postID } = req.params;
-  Post.findById(postID)
-    .populate("author")
-    .populate("comments")
-    .populate({
-      path: "comments",
-      populate: {
-        path: "author",
-        model: "User",
-      },
-    })
-    .then((post) => {
-      console.log(post);
-      res.render("home/postview", { posts: [post], user: req.user });
-    })
-    .catch((err) => console.error(err));
-});
-
-router.post("/post/:postID/addcomment", (req, res) => {
-  const { postID } = req.params;
-  const { text } = req.body;
-  Post.findById(postID).then((post) => {
-    let newComment;
-    newComment = new Comment({ author: req.user._id, text });
-    newComment.save().then((comment) => {
-      post.comments.push(comment._id);
-      post.save().then((updatedPost) => res.redirect(`/post/${postID}`));
-    });
-  });
-});
-
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
@@ -281,7 +170,6 @@ router.get(
   "/auth/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
-
 
 router.get("/auth/google/callback", (req, res, next) => {
   passport.authenticate("google", (err, theUser, failureDetails) => {
@@ -306,9 +194,7 @@ function checkUserStatus(req, res, next) {
   }
 }
 
-//Privacy part in sign up 
+//Privacy part in sign up
 router.get("/privacy", (req, res, next) => res.render("privacy"));
 
-
 module.exports = router;
-
