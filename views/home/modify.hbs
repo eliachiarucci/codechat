@@ -1,9 +1,12 @@
-LOGGED IN AS {{user.email}} {{user.lastname}}
-<form name="modifypost" action="/modifypost/{{post.id}}" method="POST">
-  <textarea type="text" name="text">{{post.text}}</textarea>
-</form>
-{{> codeEditor post}}
-<button onclick="submitForm()">Submit </button>
+<div class="new-post-wrap">
+  <form name="modifypost" action="/modifypost/{{post.id}}" method="POST">
+    <p>Modify Post:</p>
+    <textarea type="text" name="text">{{post.text}}</textarea>
+  </form>
+  {{> codeEditor post}}
+  <br>
+  <button class="btn btn-warning" onclick="submitForm()">Modify</button>
+</div>
 <script>
   function submitForm() {
     let form = document.forms["modifypost"];

@@ -2,9 +2,9 @@
   <div class="editor-target-wrap">
     <div class="editor-wrap">
       <div class="tabs-button-container">
-        <button class="btn switchtab{{this.id}}" tab="html{{this.id}}">HTML</button>
-        <button class="btn switchtab{{this.id}}" tab="css{{this.id}}">CSS</button>
-        <button class="btn switchtab{{this.id}}" tab="js{{this.id}}">JS</button>
+        <button class="btn btn-tab code-tab-active switchtab{{this.id}}" tab="html{{this.id}}">HTML</button>
+        <button class="btn btn-tab switchtab{{this.id}}" tab="css{{this.id}}">CSS</button>
+        <button class="btn btn-tab switchtab{{this.id}}" tab="js{{this.id}}">JS</button>
       </div>
       <div class="editor-target-container">
         <div id="html{{this.id}}" class="editor editor{{this.id}}" style="display: block;">{{this.html}}</div>
@@ -19,7 +19,7 @@
 </div>
 <script>
 
-  (function () {
+  (() => {
     ace.config.set('basePath', 'https://pagecdn.io/lib/ace/1.4.12/');
 
     ace.edit("html{{this.id}}", {
@@ -41,11 +41,19 @@
     let switchtabs = document.getElementsByClassName("switchtab{{this.id}}")
     for (let i = 0; i < switchtabs.length; i++) {
       switchtabs[i].addEventListener('click', (e) => {
+        const editorTargetId = e.target.getAttribute("tab");
+        const buttonTabTarget = e.target;
         let editors = document.getElementsByClassName("editor{{this.id}}");
         for (let i = 0; i < editors.length; i++) {
           editors[i].style.display = "none";
         }
-        document.getElementById(e.target.getAttribute("tab")).style.display = "block"
+
+        for (let i = 0; i < switchtabs.length; i++) {
+          switchtabs[i].classList.remove("code-tab-active")
+        }
+
+        document.getElementById(editorTargetId).style.display = "block";
+        buttonTabTarget.classList.add("code-tab-active");
       })
     }
 
@@ -75,7 +83,7 @@
       element.append(newDiv);
 
     })
-  }())
+  })()
 
 
 

@@ -20,10 +20,11 @@ const { format } = require("date-fns");
 var GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 mongoose
-  .connect(
-    "mongodb+srv://elia:codechat@cluster0.mdps2.mongodb.net/codechat?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
-  )
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  })
   .then((x) => {
     console.log(
       `Connected to Mongo! Database name: "${x.connections[0].name}"`
@@ -157,6 +158,7 @@ hbs.registerHelper("formatDate", function (date) {
 hbs.registerHelper("object", function ({ hash }) {
   return hash;
 });
+
 // default value for title local
 app.locals.title = "Express - Generated with IronGenerator";
 app.use(passport.initialize());
@@ -167,9 +169,7 @@ app.use("/", main);
 const auth = require("./routes/auth.routes");
 app.use("/", auth);
 
-const router = require("./routes/auth.routes");
-app.use("/", router);
-
-//Log In with Google Account
+const user = require("./routes/user.routes");
+app.use("/", user);
 
 module.exports = app;
