@@ -41,10 +41,10 @@ body {
 .form-control {
   height: 40px;
   box-shadow: none;
-  color: #969fa4; }
+  color: #a496a2; }
 
 .form-control:focus {
-  border-color: #5cb85c; }
+  border-color: #301592; }
 
 .form-control, .btn {
   border-radius: 3px; }
@@ -56,7 +56,7 @@ body {
   font-size: 15px; }
 
 .signupLogin-form h2 {
-  color: #636363;
+  color: #c01111;
   margin: 0 0 15px;
   position: relative;
   text-align: center; }
@@ -65,7 +65,7 @@ body {
   content: "";
   height: 2px;
   width: 30%;
-  background: #d4d4d4;
+  background: #c01111;
   position: absolute;
   top: 50%;
   z-index: 2; }
@@ -77,12 +77,12 @@ body {
   right: 0; }
 
 .signupLogin-form .hint-text {
-  color: #999;
+  color: black;
   margin-bottom: 30px;
   text-align: center; }
 
 .signupLogin-form form {
-  color: #999;
+  color: black;
   border-radius: 3px;
   margin-bottom: 15px;
   background: #f2f3f7;
@@ -108,14 +108,14 @@ body {
   padding-left: 10px; }
 
 .signupLogin-form a {
-  color: #fff;
+  color: #880c69;
   text-decoration: underline; }
 
 .signupLogin-form a:hover {
   text-decoration: none; }
 
 .signupLogin-form form a {
-  color: #5cb85c;
+  color: #c01111;
   text-decoration: none; }
 
 .ssignupLogin-form form a:hover {
@@ -294,16 +294,13 @@ a {
   width: 100%;
   height: 50px; }
 
-.privacypage {
+.privacypart {
   margin-left: 200px;
-  background-color: black;
-  text-align: center;
-  width: 75%; }
+  background-color: rgba(185, 180, 180, 0.185);
+  width: 75%;
+  padding: 15px; }
 
-.privacypage h3 {
-  color: #f3c839; }
-
-.privacypage p {
-  color: #ecdba2; }
+.privacypart h3 {
+  color: #474747; }
 
 /*# sourceMappingURL=style.css.map */

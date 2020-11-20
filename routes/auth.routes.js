@@ -5,6 +5,9 @@ const fileUploader = require("../configs/cloudinary.config")
 // User model
 const User = require("../models/User.model.js");
 
+// Post model
+const Post = require("../models/Post.model");
+
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const { mainModule } = require("process");
